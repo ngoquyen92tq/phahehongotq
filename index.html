@@ -124,7 +124,7 @@
         .article-card h2 { color: #781c1c; font-size: 22px; border-bottom: 2px solid #781c1c; padding-bottom: 10px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
         .article-card textarea { width: 100%; height: 350px; padding: 15px; border: 1px solid #8c6d31; border-radius: 8px; font-size: 15px; line-height: 1.6; font-family: inherit; box-sizing: border-box; resize: vertical; background: #fffcf7; color: #333; }
 
-        /* ẨN THANH TÌM KIẾM MẶC ĐỊNH */
+        /* ẨN THANH TÌM KIẾM MẶC ĐỊNH CHỐNG XUNG ĐỘT */
         .boc-search, .boc-search input, .boc-search svg { display: none !important; }
 
         /* DÒNG CHỮ HỘI ĐỒNG HỌ NGÔ Ở GÓC DƯỚI BÊN TRÁI */
@@ -157,25 +157,29 @@
         .doi-6 rect { fill: #7e5233 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
         .doi-7 rect { fill: #2c3e50 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
 
-        /* CSS ĐẶC BIỆT: CỤ NGÔ TÀI NHÂN - HÌNH TRÒN TUYỆT ĐỐI & CHỮ SIÊU TO */
-        .o-nhan-tron-phongto rx, 
-        .o-nhan-tron-phongto ry, 
+        /* CSS ÉP ĐỘC QUYỀN HÌNH TRÒN KHÔNG BỊ BIẾN THÀNH ELIP CHO CỤ NGÔ TÀI NHÂN */
         .o-nhan-tron-phongto rect {
             rx: 50% !important; 
             ry: 50% !important;
+            width: 200px !important;
+            height: 200px !important;
             fill: #8b0000 !important; 
             stroke: #ffcc00 !important;
-            stroke-width: 8px !important;
+            stroke-width: 6px !important;
         }
         .o-nhan-tron-phongto text[data-field="name"] {
-            font-size: 42px !important;
+            font-size: 24px !important;
             fill: #ffffff !important;
-            transform: translateY(15px);
+            x: 100px !important;
+            y: 95px !important;
+            text-anchor: middle !important;
         }
         .o-nhan-tron-phongto text[data-field="title"] {
-            font-size: 22px !important;
+            font-size: 15px !important;
             fill: #ffcc00 !important;
-            transform: translateY(25px);
+            x: 100px !important;
+            y: 135px !important;
+            text-anchor: middle !important;
         }
         .o-nhan-tron-phongto img {
             display: none !important; 
@@ -355,6 +359,7 @@
         var giaPha = [];
         var chart;
 
+        // CẤU HÌNH ĐỒ HỌA GIA PHẢ CHUẨN
         chart = new OrgChart(document.getElementById("tree"), {
             template: "isla",
             mouseScrol: OrgChart.action.zoom,
@@ -370,7 +375,8 @@
                 "doi-5": { node: { width: 220, height: 85 } },
                 "doi-6": { node: { width: 180, height: 75 } },
                 "doi-7": { node: { width: 180, height: 75 } },
-                "o-nhan-tron-phongto": { node: { width: 280, height: 280 } }
+                // Ép kích thước vuông tuyệt đối cho cụ Ngô Tài Nhân trong lõi SVG đồ họa
+                "o-nhan-tron-phongto": { node: { width: 200, height: 200 } }
             }
         });
 
@@ -433,13 +439,12 @@
             document.getElementById("qrcode").innerHTML = '<img src="' + qrUrl + '" alt="QR Phả Hệ">';
         }
 
-        // HÀM TÌM KIẾM THÀNH VIÊN TRÊN CÂY PHẢ HỆ
         function xuLyTimKiemCay() {
             var value = document.getElementById("clanTreeSearchInput").value;
             var result = chart.search(value);
-            // Sơ đồ sẽ tự động làm nổi bật hoặc điều hướng tới cụm thành viên tìm thấy
         }
 
+        // LẮNG NGHE VÀ ĐỒNG BỘ DỮ LIỆU TỪ CLOUD FIREBASE
         db.on('value', function(snapshot) {
             var data = snapshot.val();
             if (data) {
@@ -458,7 +463,7 @@
                     };
                 });
 
-                // CHỈ CHẶN CÁC TÊN PHỤ NỮ NHẬP SAI (ĐÃ HOÀN TOÀN MỞ KHÓA CHO CỤ NGÔ VĂN LÝ NHẬP BÌNH THƯỜNG)
+                // CHỈ LỌC BỎ BÀI ĐĂNG LỖI TÊN KHÔNG LIÊN QUAN (MỞ HOÀN TOÀN TẤT CẢ LOGIC CHO CỤ NGÔ VĂN LÝ)
                 tamGiaPha = tamGiaPha.filter(n => {
                     var lowName = n.name.trim().toLowerCase();
                     return lowName !== "ngô diệp chi" && 
@@ -487,14 +492,14 @@
                     });
                 }
 
-                // CỤ NGÔ TÀI NHÂN - HÌNH TRÒN TUYỆT ĐỐI
+                // CHỈ ĐỊNH TAG RIÊNG ĐỂ ÉP HÌNH TRÒN ĐỘC QUYỀN CHO CỤ NGÔ TÀI NHÂN
                 tamGiaPha.forEach(member => {
                     if (member.name.trim() === "Ngô Tài Nhân") {
                         member.tags = ["o-nhan-tron-phongto"];
                     }
                 });
 
-                // ĐIỀU CHỈNH QUAN TRỌNG: SẮP XẾP SỐ THỨ TỰ NHỎ BÊN TRÁI, LỚN BÊN PHẢI ĐỒNG ĐỀU
+                // SẮP XẾP THỨ TỰ ĐỒNG BỘ: SỐ THỨ TỰ NHỎ BÊN TRÁI, LỚN DẦN BÊN PHẢI
                 tamGiaPha.sort((a, b) => a.order - b.order);
                 giaPha = tamGiaPha;
 
@@ -514,6 +519,7 @@
             }
         });
 
+        // SỬA ĐỔI QUAN TRỌNG: ĐẢM BẢO GIỮ NGUYÊN KIỂU CHUỖI ID GỐC ĐỂ KHÔNG LÀM GÃY LIÊN KẾT CHA - CON CỦA CỤ NGÔ VĂN LÝ
         function capNhatGiaoDienCha(danhSachLoc) {
             chart.load(giaPha);
             var sel = document.getElementById("parentSelect");
@@ -524,8 +530,8 @@
             
             var danhSachHopLe = nguonDuLieu.filter(p => p.id !== currentEditId);
             
-            // Khi hiển thị trong danh sách chọn cha, sắp xếp theo tên abc để dễ tìm
-            [...danhSachHopLe].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
+            // Sắp xếp danh sách lựa chọn trong Menu thả xuống theo bảng chữ cái tiếng Việt để anh dễ thao tác gõ tìm
+            [...danhSachHopLe].sort((a,b) => a.name.localeCompare(b.name, 'vi')).forEach(p => {
                 var opt = document.createElement("option");
                 opt.value = p.id; 
                 opt.text = p.name + " (" + (p.title || "") + ")"; 
@@ -561,7 +567,6 @@
             event.target.classList.add('active');
         }
 
-        // HÀM XÓA BỎ THÀNH VIÊN KHỎI FIREBASE
         function xoaThanhVien() {
             var id = document.getElementById("editMemberId").value;
             var tenXoa = document.getElementById("newName").value;
@@ -582,6 +587,7 @@
             }
         }
 
+        // HÀM LƯU THÀNH VIÊN ĐÃ ĐƯỢC FIX LỖI ÉP STRING ID TOÀN DIỆN KHÔNG CÒN LÀM MẤT KHỚP NÚT CỦA CỤ LÝ
         function luuThanhVien() {
             var id = document.getElementById("editMemberId").value;
             var name = document.getElementById("newName").value.trim();
@@ -607,7 +613,7 @@
             else if(title.includes("6")) tagDoi = "doi-6";
             
             var duLieuLuu = {
-                pid: pid || null,
+                pid: pid ? String(pid) : null,
                 name: name,
                 title: title,
                 gender: gender,
@@ -626,7 +632,7 @@
             var ongThang = giaPha.find(n => n.name.trim() === "Ngô Vĩnh Thắng");
             var viTriIndex = danhSachConOngThang.indexOf(name);
             if (viTriIndex !== -1 && ongThang) {
-                duLieuLuu.pid = ongThang.id;
+                duLieuLuu.pid = String(ongThang.id);
                 duLieuLuu.order = viTriIndex + 1;
             }
 
@@ -635,7 +641,7 @@
                     var nguoiCu = giaPha.find(n => n.id === id);
                     img = nguoiCu ? nguoiCu.img : imgNgo;
                 }
-                duLieuLuu.id = id;
+                duLieuLuu.id = String(id);
                 duLieuLuu.img = img;
                 if (orderInput === "") {
                     var nguoiCuGoc = giaPha.find(n => n.id === id);
