@@ -109,12 +109,21 @@
         .doi-6 rect { fill: #7e5233 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
         .doi-7 rect { fill: #2c3e50 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
 
+        /* CẤU HÌNH GIAO DIỆN DI ĐỘNG (ĐÃ SỬA LỖI ẨN HOÀNH PHI) */
         @media screen and (max-width: 768px) {
-            .header-clan { padding: 0 10px; height: 75px; background: #781c1c; }
+            .header-clan { 
+                padding: 0 10px; 
+                height: 90px; 
+                background-color: #781c1c;
+                background-image: url('hoanhphi.png');
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: contain;
+            }
             .header-title-left, .header-title-right { font-size: 13px; letter-spacing: 0px; display: none; }
             .nav-menu-bar { height: auto; flex-wrap: wrap; padding: 5px 0; }
             .nav-item { padding: 5px 10px; font-size: 11px; border: none; }
-            .main-container { height: calc(100% - 150px); }
+            .main-container { height: calc(100% - 165px); }
             .sidebar-form { 
                 position: absolute; bottom: 50px; left: 0; width: 100%; height: 65%; 
                 transform: translateY(120%); border-radius: 20px 20px 0 0; 
@@ -280,7 +289,6 @@
             }
         });
 
-        // SỰ KIỆN: BẤM VÀO Ô NGƯỜI BẤT KỲ TRÊN CÂY ĐỂ CHỈNH SỬA / CẬP NHẬT ẢNH CHÂN DUNG
         chart.on('click', function(sender, args) {
             var memberId = args.node.id;
             var memberData = giaPha.find(n => n.id === memberId);
@@ -298,7 +306,6 @@
                 capNhatGiaoDienCha(); 
                 document.getElementById("parentSelect").value = memberData.pid || "";
                 
-                // Đổi trạng thái Form sang Chế độ sửa đổi
                 document.getElementById("formTitle").innerText = "SỬA THÀNG VIÊN: " + memberData.name.toUpperCase();
                 document.getElementById("btnSubmitForm").innerText = "LƯU THAY ĐỔI";
                 document.getElementById("btnCancelEdit").style.display = "block";
@@ -307,7 +314,7 @@
                     document.getElementById("sidebarForm").classList.add("open");
                 }
             }
-            return false; // Ngăn chặn mở bảng đen mặc định lỗi thời của thư viện
+            return false; 
         });
 
         function khoaTiengVietThanhTimKiem() {
@@ -364,7 +371,6 @@
             var currentEditId = document.getElementById("editMemberId").value;
             var nguonDuLieu = danhSachLoc || giaPha;
             
-            // Loại bỏ chính bản thân khỏi danh sách chọn Cha để tránh lỗi vòng lặp phả hệ
             var danhSachHopLe = nguonDuLieu.filter(p => p.id !== currentEditId);
             
             [...danhSachHopLe].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
@@ -403,7 +409,6 @@
             event.target.classList.add('active');
         }
 
-        // HÀM XỬ LÝ LƯU (GỘP CẢ THÊM MỚI LẪN SỬA ĐỔI NGƯỜI CŨ)
         function luuThanhVien() {
             var id = document.getElementById("editMemberId").value;
             var name = document.getElementById("newName").value.trim();
@@ -423,7 +428,6 @@
             else if(title.includes("6")) tagDoi = "doi-6";
             
             if (id) {
-                // CHẾ ĐỘ SỬA: Nếu không chọn ảnh mới thì giữ nguyên ảnh cũ hiện tại của họ
                 if (!img) {
                     var nguoiCu = giaPha.find(n => n.id === id);
                     img = nguoiCu ? nguoiCu.img : imgNgo;
@@ -444,7 +448,6 @@
                     }
                 });
             } else {
-                // CHẾ ĐỘ THÊM MỚI BIỂU MẪU BAN ĐẦU
                 if (!img) img = imgNgo;
                 var uniqueId = Date.now().toString();
 
@@ -465,7 +468,6 @@
             }
         }
 
-        // ĐƯA BIỂU MẪU VỀ TRẠNG THÁI TRỐNG BAN ĐẦU (THÊM MỚI)
         function datLaiForm() {
             document.getElementById("editMemberId").value = "";
             document.getElementById("newName").value = "";
