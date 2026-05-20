@@ -75,6 +75,32 @@
             position: absolute; top: 15px; left: 15px; z-index: 99;
         }
 
+        /* KHU VỰC TÌM KIẾM THÀNH VIÊN GÓC TRÊN BÊN PHẢI (MỜ VÀ NHỎ) */
+        .tree-search-top-right {
+            position: absolute; top: 15px; right: 15px; z-index: 99;
+            display: flex; align-items: center;
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(120, 28, 28, 0.25);
+            border-radius: 20px; padding: 4px 10px;
+            transition: all 0.3s ease; backdrop-filter: blur(4px);
+        }
+        .tree-search-top-right:hover, .tree-search-top-right:focus-within {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(120, 28, 28, 0.7);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .tree-search-top-right input {
+            border: none; background: transparent; outline: none;
+            font-size: 12px; width: 110px; color: #333; transition: width 0.3s ease;
+        }
+        .tree-search-top-right input::placeholder { color: #777; }
+        .tree-search-top-right:focus-within input { width: 150px; }
+        .tree-search-icon {
+            background: none; border: none; padding: 0 0 0 5px;
+            cursor: pointer; color: #781c1c; display: flex; align-items: center; opacity: 0.6;
+        }
+        .tree-search-top-right:hover .tree-search-icon { opacity: 1; }
+
         /* THANH ĐIỀU KHIỂN ZOOM */
         .tree-toolbar-bottom-right {
             position: absolute; bottom: 15px; right: 15px; z-index: 99; display: flex; gap: 6px;
@@ -142,12 +168,12 @@
             stroke-width: 8px !important;
         }
         .o-nhan-tron-phongto text[data-field="name"] {
-            font-size: 56px !important;
+            font-size: 42px !important;
             fill: #ffffff !important;
             transform: translateY(15px);
         }
         .o-nhan-tron-phongto text[data-field="title"] {
-            font-size: 26px !important;
+            font-size: 22px !important;
             fill: #ffcc00 !important;
             transform: translateY(25px);
         }
@@ -167,10 +193,11 @@
             .main-container { height: calc(100% - 165px); }
             .sidebar-form { width: 90%; max-height: 80vh; }
             .clan-footer-credit { bottom: 60px; left: 15px; }
+            .tree-search-top-right { top: 70px; right: 10px; }
         }
 
         @media print {
-            .sidebar-form, .header-clan, .nav-menu-bar, .clan-footer-credit, .tree-toolbar-top, .tree-toolbar-bottom-right { display: none !important; }
+            .sidebar-form, .header-clan, .nav-menu-bar, .clan-footer-credit, .tree-toolbar-top, .tree-toolbar-bottom-right, .tree-search-top-right { display: none !important; }
             body, html, .main-container, #tree, .page-section { width: 100% !important; height: 100% !important; background: #ffffff !important; position: absolute !important; top: 0; left: 0; margin: 0; padding: 0; overflow: hidden; }
             #ph_he_section { display: flex !important; }
             .print-qr-footer { display: flex !important; }
@@ -202,6 +229,13 @@
             
             <div class="tree-toolbar-top">
                 <button class="btn-tool" onclick="moModalThemMoi()">➕ THÊM THÀNH VIÊN MỚI</button>
+            </div>
+
+            <div class="tree-search-top-right">
+                <input type="text" id="clanTreeSearchInput" placeholder="Tìm thành viên..." oninput="xuLyTimKiemCay()">
+                <button class="tree-search-icon" title="Tìm kiếm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
             </div>
 
             <div class="tree-toolbar-bottom-right">
@@ -327,7 +361,7 @@
             nodeBinding: { field_0: "name", field_1: "title", img_0: "img" },
             siblingSpacing: 15, 
             levelSpacing: 40,   
-            searchFields: [], 
+            searchFields: ["name", "title"], 
             tags: {
                 "doi-1": { node: { width: 320, height: 120 } },
                 "doi-2": { node: { width: 260, height: 95 } },
@@ -399,6 +433,13 @@
             document.getElementById("qrcode").innerHTML = '<img src="' + qrUrl + '" alt="QR Phả Hệ">';
         }
 
+        // HÀM TÌM KIẾM THÀNH VIÊN TRÊN CÂY PHẢ HỆ
+        function xuLyTimKiemCay() {
+            var value = document.getElementById("clanTreeSearchInput").value;
+            var result = chart.search(value);
+            // Sơ đồ sẽ tự động làm nổi bật hoặc điều hướng tới cụm thành viên tìm thấy
+        }
+
         db.on('value', function(snapshot) {
             var data = snapshot.val();
             if (data) {
@@ -417,7 +458,7 @@
                     };
                 });
 
-                // CHỈ CHẶN CÁC TÊN NHẬP SAI (ĐÃ GỠ BỎ CHẶN CỤ NGÔ VĂN LẠI ĐỂ HIỂN THỊ LẠI BÌNH THƯỜNG)
+                // CHỈ CHẶN CÁC TÊN PHỤ NỮ NHẬP SAI (ĐÃ HOÀN TOÀN MỞ KHÓA CHO CỤ NGÔ VĂN LÝ NHẬP BÌNH THƯỜNG)
                 tamGiaPha = tamGiaPha.filter(n => {
                     var lowName = n.name.trim().toLowerCase();
                     return lowName !== "ngô diệp chi" && 
@@ -453,6 +494,7 @@
                     }
                 });
 
+                // ĐIỀU CHỈNH QUAN TRỌNG: SẮP XẾP SỐ THỨ TỰ NHỎ BÊN TRÁI, LỚN BÊN PHẢI ĐỒNG ĐỀU
                 tamGiaPha.sort((a, b) => a.order - b.order);
                 giaPha = tamGiaPha;
 
@@ -482,6 +524,7 @@
             
             var danhSachHopLe = nguonDuLieu.filter(p => p.id !== currentEditId);
             
+            // Khi hiển thị trong danh sách chọn cha, sắp xếp theo tên abc để dễ tìm
             [...danhSachHopLe].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
                 var opt = document.createElement("option");
                 opt.value = p.id; 
@@ -634,32 +677,6 @@
                 }
             });
         }
-
-        function xuLyAnh(f) {
-            if (f.files && f.files[0]) {
-                var reader = new FileReader();
-                reader.onload = e => document.getElementById("photoBase64").value = e.target.result;
-                reader.readAsDataURL(f.files[0]);
-            }
-        }
-
-        function chuanBiIn(loaiIn) {
-            if (loaiIn === 'chi_nam') {
-                var chiInNam = giaPha.filter(n => n.gender === "nam");
-                chart.load(chiInNam);
-            } else {
-                chart.load(giaPha);
-            }
-            chart.getLayout().compact = true;
-            chart.fit();
-            setTimeout(() => { 
-                window.print(); 
-                chart.getLayout().compact = false;
-                capNhatGiaoDienCha(); 
-            }, 800);
-        }
-
-        taoMaQR();
     </script>
 </body>
 </html>
