@@ -75,7 +75,7 @@
             position: absolute; top: 15px; left: 15px; z-index: 99;
         }
 
-        /* THANH ĐIỀU KHIỂN ZOOM CHUYỂN XUỐNG GÓC DƯỚI BÊN PHẢI */
+        /* THANH ĐIỀU KHIỂN ZOOM */
         .tree-toolbar-bottom-right {
             position: absolute; bottom: 15px; right: 15px; z-index: 99; display: flex; gap: 6px;
         }
@@ -98,7 +98,7 @@
         .article-card h2 { color: #781c1c; font-size: 22px; border-bottom: 2px solid #781c1c; padding-bottom: 10px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
         .article-card textarea { width: 100%; height: 350px; padding: 15px; border: 1px solid #8c6d31; border-radius: 8px; font-size: 15px; line-height: 1.6; font-family: inherit; box-sizing: border-box; resize: vertical; background: #fffcf7; color: #333; }
 
-        /* ẨN THANH TÌM KIẾM MẶC ĐỊNH BỊ LỖI */
+        /* ẨN THANH TÌM KIẾM MẶC ĐỊNH */
         .boc-search, .boc-search input, .boc-search svg { display: none !important; }
 
         /* DÒNG CHỮ HỘI ĐỒNG HỌ NGÔ Ở GÓC DƯỚI BÊN TRÁI */
@@ -131,7 +131,7 @@
         .doi-6 rect { fill: #7e5233 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
         .doi-7 rect { fill: #2c3e50 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
 
-        /* CSS ĐẶC BIỆT: BIẾN Ô CỦA CỤ NGÔ TÀI NHÂN THÀNH HÌNH TRÒN TUYỆT ĐỐI (KHÔNG ELÍP) VÀ CHỮ SIÊU TO */
+        /* CSS ĐẶC BIỆT: CỤ NGÔ TÀI NHÂN - HÌNH TRÒN TUYỆT ĐỐI & CHỮ SIÊU TO */
         .o-nhan-tron-phongto rx, 
         .o-nhan-tron-phongto ry, 
         .o-nhan-tron-phongto rect {
@@ -141,7 +141,6 @@
             stroke: #ffcc00 !important;
             stroke-width: 8px !important;
         }
-        /* Cân chỉnh vị trí chữ vào giữa tâm vòng tròn */
         .o-nhan-tron-phongto text[data-field="name"] {
             font-size: 56px !important;
             fill: #ffffff !important;
@@ -153,7 +152,7 @@
             transform: translateY(25px);
         }
         .o-nhan-tron-phongto img {
-            display: none !important; /* Ẩn avatar mặc định để nhường không gian cho vòng tròn chữ tôn nghiêm */
+            display: none !important; 
         }
 
         @media screen and (max-width: 768px) {
@@ -337,7 +336,7 @@
                 "doi-5": { node: { width: 220, height: 85 } },
                 "doi-6": { node: { width: 180, height: 75 } },
                 "doi-7": { node: { width: 180, height: 75 } },
-                "o-nhan-tron-phongto": { node: { width: 280, height: 280 } } // Đặt Khung hình vuông để bo tròn 50% ra hình tròn xoe tuyệt đối
+                "o-nhan-tron-phongto": { node: { width: 280, height: 280 } }
             }
         });
 
@@ -349,7 +348,6 @@
                 document.getElementById("newName").value = memberData.name;
                 document.getElementById("newTitle").value = memberData.title || "";
                 
-                // Hiển thị số thứ tự thật để quản lý dễ chỉnh sửa sắp xếp
                 document.getElementById("newOrder").value = (memberData.isAutoOrder) ? "" : memberData.order;
                 
                 if (memberData.gender === "nu") {
@@ -364,9 +362,7 @@
                 document.getElementById("formTitle").innerText = "SỬA THÀNH VIÊN: " + memberData.name.toUpperCase();
                 document.getElementById("btnSubmitForm").innerText = "LƯU THAY ĐỔI";
                 
-                // Hiện nút xóa khi chọn cấu trúc thành viên có sẵn
                 document.getElementById("btnDeleteMember").style.display = "block";
-                
                 document.getElementById("sidebarForm").classList.add("open");
             }
             return false; 
@@ -389,7 +385,6 @@
             document.getElementById("formTitle").innerText = "THÊM THÀNH VIÊN MỚI";
             document.getElementById("btnSubmitForm").innerText = "THÊM VÀO GIA PHẢ";
             
-            // Ẩn nút xóa khi thêm mới
             document.getElementById("btnDeleteMember").style.display = "none";
             document.getElementById("sidebarForm").classList.add("open");
         }
@@ -422,16 +417,15 @@
                     };
                 });
 
-                // 1. CHẶN LỌC TRIỆT ĐỂ KHÔNG CHO CÁC TÊN SAI XUẤT HIỆN
+                // CHỈ CHẶN CÁC TÊN NHẬP SAI (ĐÃ GỠ BỎ CHẶN CỤ NGÔ VĂN LẠI ĐỂ HIỂN THỊ LẠI BÌNH THƯỜNG)
                 tamGiaPha = tamGiaPha.filter(n => {
                     var lowName = n.name.trim().toLowerCase();
-                    return lowName !== "ngô văn lỵ" && 
-                           lowName !== "ngô diệp chi" && 
+                    return lowName !== "ngô diệp chi" && 
                            lowName !== "ngô bảo chân" && 
                            lowName !== "ngô bảo trân";
                 });
 
-                // 2. ÉP THỨ TỰ 12 NGƯỜI CON CỦA CỤ NGÔ VĨNH THẮNG
+                // ÉP THỨ TỰ CON CỤ NGÔ VĨNH THẮNG
                 var danhSachConOngThang = [
                     "Ngô Thế Tạ", "Ngô Thị Tô", "Ngô Thị Chiêu", "Ngô Thị Lâm",
                     "Ngô Văn Phòng", "Ngô Hồng Vân", "Ngô Văn Vệ", "Ngô Thị Cửu",
@@ -452,14 +446,13 @@
                     });
                 }
 
-                // 3. XỬ LÝ BIẾN Ô CỦA CỤ NGÔ TÀI NHÂN THÀNH VIỀN TRÒN TUYỆT ĐỐI
+                // CỤ NGÔ TÀI NHÂN - HÌNH TRÒN TUYỆT ĐỐI
                 tamGiaPha.forEach(member => {
                     if (member.name.trim() === "Ngô Tài Nhân") {
                         member.tags = ["o-nhan-tron-phongto"];
                     }
                 });
 
-                // Quản lý sắp xếp: Số nhỏ đứng TRÁI - Số lớn đứng PHẢI
                 tamGiaPha.sort((a, b) => a.order - b.order);
                 giaPha = tamGiaPha;
 
@@ -525,7 +518,7 @@
             event.target.classList.add('active');
         }
 
-        // CÔNG CỤ QUẢN LÝ: HÀM XÓA BỎ THÀNH VIÊN TRỰC TIẾP KHỎI CƠ SỞ DỮ LIỆU FIREBASE
+        // HÀM XÓA BỎ THÀNH VIÊN KHỎI FIREBASE
         function xoaThanhVien() {
             var id = document.getElementById("editMemberId").value;
             var tenXoa = document.getElementById("newName").value;
@@ -578,7 +571,6 @@
                 tags: [tagDoi]
             };
 
-            // Quản lý sắp xếp thủ công qua số thứ tự nhập vào
             if (orderInput !== "") {
                 duLieuLuu.order = parseInt(orderInput);
             }
