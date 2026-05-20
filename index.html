@@ -14,25 +14,34 @@
 
         /* KHUNG NHẬP LIỆU BÊN TRÁI */
         .sidebar-form {
-            width: 340px; background: #fffdf9; border-right: 4px double #781c1c;
-            padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.15); z-index: 10;
+            width: 350px; background: #fffdf9; border-right: 4px double #781c1c;
+            padding: 15px; box-shadow: 5px 0 15px rgba(0,0,0,0.15); z-index: 10;
             overflow-y: auto; box-sizing: border-box; transition: all 0.3s ease;
+            display: flex; flex-direction: column; gap: 10px;
         }
-        .sidebar-form h2 { font-size: 18px; color: #781c1c; border-bottom: 2px dashed #8c6d31; padding-bottom: 8px; text-align: center; margin-top: 0; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 13px; font-weight: bold; color: #5c4033; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 9px; border: 1px solid #8c6d31; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        .sidebar-form h2 { font-size: 16px; color: #781c1c; border-bottom: 2px dashed #8c6d31; padding-bottom: 6px; text-align: center; margin: 0 0 5px 0; }
+        .form-group { margin-bottom: 8px; }
+        .form-group label { display: block; font-size: 12px; font-weight: bold; color: #5c4033; margin-bottom: 3px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #8c6d31; border-radius: 6px; font-size: 13px; box-sizing: border-box; }
         
-        .gender-group { display: flex; gap: 15px; margin-top: 5px; }
-        .gender-group label { display: flex; align-items: center; gap: 5px; font-size: 14px; cursor: pointer; font-weight: normal; }
-        .gender-group input { width: auto; cursor: pointer; }
-
+        .gender-group { display: flex; gap: 15px; margin-top: 3px; }
+        .gender-group label { display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; font-weight: normal; }
+        
         .btn-submit {
-            width: 100%; background-color: #781c1c; color: #f7d070; padding: 11px;
+            width: 100%; background-color: #781c1c; color: #f7d070; padding: 10px;
             border: 1px solid #f7d070; border-radius: 6px; font-weight: bold; cursor: pointer;
-            margin-bottom: 8px; text-transform: uppercase; font-size: 12px;
+            text-transform: uppercase; font-size: 11px; transition: 0.2s;
         }
         .btn-submit:hover { background-color: #9c2424; color: #fff; }
+
+        /* CÁC MỤC BÀI VIẾT DÒNG HỌ */
+        .tabs-container { margin-top: 10px; border-top: 2px solid #8c6d31; padding-top: 10px; }
+        .tabs-header { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 8px; }
+        .tab-btn { background: #f2e1c1; border: 1px solid #8c6d31; padding: 6px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; color: #781c1c; text-align: center; }
+        .tab-btn.active { background: #781c1c; color: #f7d070; }
+        .tab-content { display: none; background: #fff; border: 1px solid #8c6d31; padding: 10px; border-radius: 6px; }
+        .tab-content.active { display: block; }
+        .tab-content textarea { width: 100%; height: 120px; resize: vertical; margin-bottom: 5px; font-family: inherit; }
 
         /* NỀN CÂY PHẢ HỆ */
         #tree { 
@@ -40,24 +49,32 @@
             background-image: url('https://www.transparenttextures.com/patterns/gold-canvas.png');
         }
 
-        /* TIÊU ĐỀ HOÀNH PHI */
+        /* TIÊU ĐỀ HOÀNH PHI + SONG LONG */
         .header-clan { 
             display: flex; align-items: center; justify-content: space-between;
             background: linear-gradient(to right, #f5df98, #fff1b8, #f5df98); 
-            padding: 10px 30px; border-bottom: 4px double #781c1c; height: 75px; box-sizing: border-box; z-index: 12;
+            padding: 0 40px; border-bottom: 4px double #781c1c; height: 75px; box-sizing: border-box; z-index: 12; position: relative;
         }
-        .header-title-left, .header-title-right { font-size: 22px; font-weight: bold; color: #781c1c; letter-spacing: 2px; }
-        .emblem-center { background-color: #de5d5d; width: 55px; height: 55px; border-radius: 50%; border: 3px solid #fff1b8; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 8px rgba(0,0,0,0.3); }
+        .header-title-left, .header-title-right { font-size: 24px; font-weight: bold; color: #781c1c; letter-spacing: 3px; font-family: "Times New Roman", serif; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        
+        .emblem-wrapper { display: flex; align-items: center; gap: 15px; position: absolute; left: 50%; transform: translateX(-50%); }
+        .dragon-icon { width: 65px; height: auto; filter: drop-shadow(2px 2px 3px rgba(120, 28, 28, 0.3)); }
+        .dragon-left { transform: scaleX(-1); } /* Quay mặt rồng trái vào trong */
+        
+        .emblem-center { background-color: #de5d5d; width: 55px; height: 55px; border-radius: 50%; border: 3px solid #fff1b8; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 8px rgba(0,0,0,0.3); flex-shrink: 0; }
         .emblem-center span { font-family: "serif"; color: #fce79d; font-size: 32px; font-weight: bold; }
 
         .clan-footer-credit { position: absolute; bottom: 8px; right: 15px; background: rgba(255, 253, 249, 0.9); padding: 5px 12px; border-radius: 20px; border: 1px solid #8c6d31; font-size: 11px; color: #5c4033; font-weight: bold; z-index: 999; }
         
-        /* KHU VỰC THÔNG TIN QR CODE (MẶC ĐỊNH ẨN TRÊN MÀN HÌNH) */
+        /* HIỆU CHỈNH Ô TÌM KIẾM TOÀN MÀN HÌNH THÀNH KÍNH LÚP NHỎ */
+        .boc-search { top: 15px !important; right: 15px !important; left: auto !important; width: 40px !important; transition: width 0.3s ease; overflow: hidden; background: #fff !important; border-radius: 20px !important; border: 2px solid #781c1c !important; box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important; }
+        .boc-search:hover, .boc-search:focus-within { width: 240px !important; }
+        .boc-search input { padding-left: 35px !important; font-size: 14px !important; }
+        .boc-search svg { left: 10px !important; width: 18px !important; height: 18px !important; fill: #781c1c !important; }
+
         .print-qr-footer {
-            display: none;
-            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
-            text-align: center; background: #fff; padding: 10px 20px;
-            border: 2px dashed #781c1c; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: none; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+            text-align: center; background: #fff; padding: 10px 20px; border: 2px dashed #781c1c; border-radius: 10px;
             align-items: center; justify-content: center; gap: 15px; z-index: 9999;
         }
         .print-qr-footer img { width: 75px; height: 75px; }
@@ -65,18 +82,17 @@
 
         .mobile-toggle-btn { display: none; }
 
-        /* ĐỊNH DẠNG CHỮ CHUNG */
+        /* ĐỊNH DẠNG TEXT TRÊN CÂY */
         .boc-node text[data-field="name"] { font-weight: bold !important; fill: #ffffff !important; }
         .boc-node text[data-field="title"] { fill: #fce79d !important; opacity: 0.9; }
 
-        /* CẤU HÌNH KÍCH THƯỚC CHỮ CHO TỪNG ĐỜI */
+        /* ĐỜI PHẢ HỆ */
         .doi-1 text[data-field="name"] { font-size: 22px !important; }
         .doi-1 text[data-field="title"] { font-size: 15px !important; }
         .doi-2 text[data-field="name"], .doi-3 text[data-field="name"] { font-size: 18px !important; }
         .doi-4 text[data-field="name"], .doi-5 text[data-field="name"] { font-size: 15px !important; }
         .doi-6 text[data-field="name"], .doi-7 text[data-field="name"] { font-size: 13px !important; }
 
-        /* CẤU HÌNH MÀU SẮC PHÂN BIỆT ĐỜI */
         .doi-1 rect { fill: #781c1c !important; stroke: #f7d070 !important; stroke-width: 4px !important; }
         .doi-2 rect { fill: #d35400 !important; stroke: #781c1c !important; stroke-width: 2.5px !important; }
         .doi-3 rect { fill: #27ae60 !important; stroke: #ffffff !important; stroke-width: 2px !important; }
@@ -85,21 +101,24 @@
         .doi-6 rect { fill: #7e5233 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
         .doi-7 rect { fill: #2c3e50 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
 
+        /* ĐIỀU CHỈNH GIAO DIỆN TRÊN ĐIỆN THOẠI TRÁNH GHI ĐÈ CHỮ HỘI ĐỒNG */
         @media screen and (max-width: 768px) {
-            .sidebar-form { position: absolute; bottom: 0; left: 0; width: 100%; height: 75%; transform: translateY(100%); border-radius: 20px 20px 0 0; border-right: none; border-top: 4px double #781c1c; }
+            .sidebar-form { 
+                position: absolute; bottom: 45px; left: 0; width: 100%; height: 70%; 
+                transform: translateY(120%); border-radius: 20px 20px 0 0; 
+                border-right: none; border-top: 4px double #781c1c; 
+            }
             .sidebar-form.open { transform: translateY(0); }
-            .mobile-toggle-btn { display: block; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: #781c1c; color: #f7d070; padding: 10px 20px; border-radius: 30px; z-index: 1000; font-weight: bold; cursor: pointer; border: 2px solid #fff1b8; }
+            .mobile-toggle-btn { display: block; position: absolute; bottom: 55px; right: 15px; background: #781c1c; color: #f7d070; padding: 10px 15px; border-radius: 30px; z-index: 1000; font-weight: bold; cursor: pointer; border: 2px solid #fff1b8; font-size: 12px; }
+            .header-title-left, .header-title-right { font-size: 16px; letter-spacing: 1px; }
+            .dragon-icon { width: 40px; }
         }
 
-        /* LỆNH IN TỐI ƯU KHỔ GIẤY A4 */
         @media print {
             .sidebar-form, .header-clan, .mobile-toggle-btn, .clan-footer-credit, .boc-search, .boc-toolbar { display: none !important; }
             body, html, .main-container, #tree { width: 100% !important; height: 100% !important; background: #ffffff !important; position: absolute !important; top: 0; left: 0; margin: 0; padding: 0; overflow: hidden; }
             .print-qr-footer { display: flex !important; }
-            @page { 
-                size: A4 landscape; 
-                margin: 2mm 2mm 25mm 2mm; 
-            }
+            @page { size: A4 landscape; margin: 2mm; }
         }
     </style>
     <script src="https://balkan.app/js/OrgChart.js"></script>
@@ -110,7 +129,11 @@
 
     <div class="header-clan">
         <div class="header-title-left">NGÔ TỘC</div>
-        <div class="emblem-center"><span>吳</span></div>
+        <div class="emblem-wrapper">
+            <img class="dragon-icon dragon-left" src="https://img.icons8.com/color/96/dragon.png" alt="Dragon Left">
+            <div class="emblem-center"><span>吳</span></div>
+            <img class="dragon-icon" src="https://img.icons8.com/color/96/dragon.png" alt="Dragon Right">
+        </div>
         <div class="header-title-right">PHẢ HỆ TRUYỀN THƯ</div>
     </div>
     
@@ -129,15 +152,51 @@
 
             <div class="form-group"><label>Thế hệ / Ghi chú:</label><input type="text" id="newTitle" placeholder="Ví dụ: Đời 8..."></div>
             <div class="form-group"><label>Ảnh chân dung:</label><input type="file" accept="image/*" onchange="xuLyAnh(this)"><input type="hidden" id="photoBase64"></div>
-            <div class="form-group"><label>Là con của:</label><select id="parentSelect"></select></div>
+            
+            <div class="form-group">
+                <label>Tìm kiếm Tên Cha nhanh:</label>
+                <input type="text" id="searchParentInput" placeholder="Gõ tên Cha để lọc nhanh..." oninput="locDanhSachCha()">
+            </div>
+            <div class="form-group">
+                <label>Là con của Cha:</label>
+                <select id="parentSelect"></select>
+            </div>
             
             <button class="btn-submit" onclick="themNguoi()">Cập Nhật Gia Phả</button>
-            <hr style="border: 1px dashed #8c6d31; margin: 15px 0;">
-            <button class="btn-submit" style="background: #27ae60; color: white;" onclick="chuanBiIn('tat_ca')">🖨️ IN TOÀN BỘ CÂY (NAM & NỮ)</button>
-            <button class="btn-submit" style="background: linear-gradient(135deg, #b8860b, #e6ca65); color: #781c1c;" onclick="chuanBiIn('chi_nam')">🖨️ CHỈ IN ĐƯỜNG NAM TRỰC HỆ</button>
+            <div style="display: flex; gap: 5px; margin-top: 5px;">
+                <button class="btn-submit" style="background: #27ae60; color: white; padding: 6px; font-size:10px;" onclick="chuanBiIn('tat_ca')">🖨️ IN TẤT CẢ</button>
+                <button class="btn-submit" style="background: #b8860b; color: white; padding: 6px; font-size:10px;" onclick="chuanBiIn('chi_nam')">🖨️ CHỈ IN NAM</button>
+            </div>
+
+            <div class="tabs-container">
+                <h2>TƯ LIỆU DÒNG HỌ</h2>
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="switchTab('lich_su')">Lịch Sử</button>
+                    <button class="tab-btn" onclick="switchTab('mo_to')">Mộ Tổ</button>
+                    <button class="tab-btn" onclick="switchTab('quy_uoc')">Quy Ước</button>
+                    <button class="tab-btn" onclick="switchTab('ket_nghia')">Kết Nghĩa</button>
+                </div>
+                
+                <div id="lich_su" class="tab-content active">
+                    <textarea id="txt_lich_su" placeholder="Nhập lịch sử - nguồn gốc dòng họ..."></textarea>
+                    <button class="btn-submit" style="background:#8c6d31;" onclick="luuBaiViet('lich_su')">Lưu bài viết</button>
+                </div>
+                <div id="mo_to" class="tab-content">
+                    <textarea id="txt_mo_to" placeholder="Nhập thông tin, vị trí khu mộ tổ..."></textarea>
+                    <button class="btn-submit" style="background:#8c6d31;" onclick="luuBaiViet('mo_to')">Lưu bài viết</button>
+                </div>
+                <div id="quy_uoc" class="tab-content">
+                    <textarea id="txt_quy_uoc" placeholder="Nhập quy ước, tộc ước dòng họ..."></textarea>
+                    <button class="btn-submit" style="background:#8c6d31;" onclick="luuBaiViet('quy_uoc')">Lưu bài viết</button>
+                </div>
+                <div id="ket_nghia" class="tab-content">
+                    <textarea id="txt_ket_nghia" placeholder="Nhập thông tin các dòng họ kết nghĩa..."></textarea>
+                    <button class="btn-submit" style="background:#8c6d31;" onclick="luuBaiViet('ket_nghia')">Lưu bài viết</button>
+                </div>
+            </div>
         </div>
 
-        <div class="mobile-toggle-btn" onclick="toggleMobile()">✍️ NHẬP DỮ LIỆU</div>
+        <div class="mobile-toggle-btn" onclick="toggleMobile()">✍️ THAY ĐỔI</div>
         
         <div id="tree"></div>
         
@@ -152,7 +211,6 @@
     <script>
         var imgNgo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23de5d5d' stroke='%23f7d070' stroke-width='2'/%3E%3Ctext x='50' y='64' font-family='serif' font-size='50' font-weight='bold' fill='%23fce79d' text-anchor='middle'%3E吳%3C/text%3E%3C/svg%3E";
 
-        // ĐÃ ĐIỀN THÔNG TIN FIREBASE HOÀN CHỈNH CHO BẠN
         var firebaseConfig = {
             apiKey: "AIzaSyAs-V0b3v6I3xAnD3Z-n1zO87T3vHnF44",
             authDomain: "phahehongo.firebaseapp.com",
@@ -163,14 +221,13 @@
             appId: "1:365824915073:web:910bf228ceb54c0df26ba9"
         };
         
-        // Khởi tạo Firebase kết nối đám mây
         firebase.initializeApp(firebaseConfig);
         var db = firebase.database().ref('giaPhaData');
+        var dbArticles = firebase.database().ref('tuyenQuangArticles'); // Nhánh lưu bài viết tư liệu độc lập
 
         var giaPha = [];
         var chart;
 
-        // KHỞI TẠO BẢN ĐỒ VỚI ĐỊNH DẠNG PHÂN CẤP KÍCH THƯỚC Ô VÀ KHOẢNG CÁCH THU GỌN
         chart = new OrgChart(document.getElementById("tree"), {
             template: "isla",
             mouseScrol: OrgChart.action.zoom,
@@ -188,19 +245,16 @@
             }
         });
 
-        // TỰ ĐỘNG TẠO MÃ QR CODE CHO ĐỊA CHỈ TRANG WEB HIỆN TẠI
         function taoMaQR() {
             var urlHienTai = window.location.href;
             var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(urlHienTai);
             document.getElementById("qrcode").innerHTML = '<img src="' + qrUrl + '" alt="QR Phả Hệ">';
         }
 
-        // LẮNG NGHE DỮ LIỆU ONLINE TỪ FIREBASE
+        // ĐỒNG BỘ CÂY VÀ TẢI BÀI VIẾT TỪ ĐÁM MÂY
         db.on('value', function(snapshot) {
             var data = snapshot.val();
-            
             if (data) {
-                // Nếu trên cơ sở dữ liệu đã có người, tải dữ liệu đó về máy
                 giaPha = Object.keys(data).map(key => ({
                     id: key,
                     pid: data[key].pid || undefined,
@@ -210,157 +264,31 @@
                     gender: data[key].gender,
                     tags: data[key].tags
                 }));
-            } else {
-                // Nếu cơ sở dữ liệu trống tinh (lần đầu chạy), đẩy danh sách gốc lên đám mây làm nền móng
-                var danhSachGoc = [
-                    { id: "1", name: "Ngô Tài Nhân", title: "Đời 1 (Sản Tài Nhằn)", img: imgNgo, gender: "nam", tags: ["doi-1"] },
-                    { id: "2", pid: "1", name: "Ngô Văn Sáng", title: "Đời 2", img: imgNgo, gender: "nam", tags: ["doi-2"] },
-                    { id: "3", pid: "1", name: "Ngô Văn Sở", title: "Đời 2", img: imgNgo, gender: "nam", tags: ["doi-2"] },
-                    { id: "4", pid: "2", name: "Ngô Văn Hồng", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-                    { id: "5", pid: "2", name: "Ngô Văn Hào", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-                    { id: "6", pid: "3", name: "Ngô Văn Minh", title: "Đời 3 (Vĩnh Phương)", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-                    { id: "7", pid: "3", name: "Ngô Văn Đường", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-                    { id: "8", pid: "3", name: "Ngô Văn Xuyến", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-                    { id: "deng3", pid: "3", name: "Ngô Thị Đeng", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
-                    { id: "dao3", pid: "3", name: "Ngô Văn Đào", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-                    { id: "quy3", pid: "3", name: "Ngô Thị Quý", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
-                    { id: "mao3", pid: "3", name: "Ngô Thị Mão", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
-                    { id: "9", pid: "4", name: "Ngô Văn Tâm", title: "Đời 4 (Hà Văn Tâm)", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "tham4_hao", pid: "5", name: "Ngô Thị Thầm", title: "Đời 4 (Hà Thị Thầm)", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-                    { id: "yen4", pid: "6", name: "Ngô Thị Yên", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-                    { id: "tien4", pid: "6", name: "Ngô Thị Tiến", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-                    { id: "10", pid: "6", name: "Ngô Vĩnh Thắng", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "giang4", pid: "6", name: "Ngô Văn Giảng", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "nau4", pid: "6", name: "Ngô Thị Nậu", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-                    { id: "11", pid: "6", name: "Ngô Xuân Đối", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "bao4", pid: "7", name: "Ngô Thị Bảo", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-                    { id: "12", pid: "7", name: "Ngô Văn Thầm", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "thi4", pid: "7", name: "Ngô Văn Thì", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "13", pid: "7", name: "Ngô Hồng Kinh", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "14", pid: "7", name: "Ngô Xuân Khoa", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "vang4", pid: "8", name: "Ngô Thị Vàng", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-                    { id: "15", pid: "8", name: "Ngô Thế Hiệp", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-                    { id: "linh5", pid: "9", name: "Hà Văn Lịnh", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "16", pid: "10", name: "Ngô Thế Tạ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "to5", pid: "10", name: "Ngô Thị Tô", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "chieu5", pid: "10", name: "Ngô Thị Chiêu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "lam5", pid: "10", name: "Ngô Thị Lâm", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "17", pid: "10", name: "Ngô Văn Phòng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "18", pid: "10", name: "Ngô Hồng Vân", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "19", pid: "10", name: "Ngô Văn Vệ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "cuu5", pid: "10", name: "Ngô Thị Cửu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "thap5", pid: "10", name: "Ngô Thị Thập", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "20", pid: "10", name: "Ngô Thế Nêm", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "nhi5", pid: "10", name: "Ngô Thị Nhị", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "21", pid: "10", name: "Ngô Văn Ngoan", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "22", pid: "11", name: "Ngô Văn Thưởng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "tam5_doi", pid: "11", name: "Ngô Thị Tâm", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "hien5_doi", pid: "11", name: "Ngô Thị Hiền", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "hau5_doi", pid: "11", name: "Ngô Thị Hậu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "cuong5_doi", pid: "11", name: "Ngô Thị Cương", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "my5_doi", pid: "11", name: "Ngô Thị Mỵ", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "diem5", pid: "11", name: "Ngô Thế Diệm", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "chuong5", pid: "12", name: "Ngô Thị Chương", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "23", pid: "12", name: "Ngô Văn Dung", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "24", pid: "12", name: "Ngô Văn Chiến", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "nga5", pid: "12", name: "Ngô Thị Nga", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "25", pid: "12", name: "Ngô Hồng Văn", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "tuc5", pid: "13", name: "Ngô Thị Túc", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "26", pid: "13", name: "Ngô Văn Chính", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "minh5_kinh", pid: "13", name: "Ngô Thị Mình", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "hoa5", pid: "13", name: "Ngô Thị Hoa", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "27", pid: "13", name: "Ngô Văn Đa", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "nhanh5", pid: "13", name: "Ngô Thị Nhanh", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "hop5", pid: "13", name: "Ngô Thị Hợp", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "28", pid: "14", name: "Ngô Văn Hùng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "29", pid: "14", name: "Ngô Xuân Lượng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "luc5", pid: "14", name: "Ngô Thị Lục", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "chieu5_khoa", pid: "14", name: "Ngô Thị Chiều", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "khan5", pid: "14", name: "Ngô Thị Khăn", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "30", pid: "14", name: "Ngô Văn Dứa", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "31", pid: "14", name: "Ngô Văn Huỳnh", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "32", pid: "14", name: "Ngô Văn Lỵ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "nhai5", pid: "14", name: "Ngô Thị Nhài", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "chung5", pid: "15", name: "Ngô Thị Chúng", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "33", pid: "15", name: "Ngô Thế Nhật", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "34", pid: "15", name: "Ngô Thế Tùng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "bach5", pid: "15", name: "Ngô Thị Bạch", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "hang5", pid: "15", name: "Ngô Thị Hằng", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-                    { id: "35", pid: "15", name: "Ngô Thế Du", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-                    { id: "36", pid: "16", name: "Ngô Thế Nghiệp", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "hoai6", pid: "16", name: "Ngô Thị Hoài", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "thieu6", pid: "16", name: "Ngô Thị Thiêu", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "37", pid: "17", name: "Ngô Hồng Thái", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "thanh6", pid: "17", name: "Ngô Kim Thanh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "38", pid: "18", name: "Ngô Quyền", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "tuananh6", pid: "18", name: "Ngô Tuấn Anh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "thuy6", pid: "19", name: "Ngô Xuân Thụy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "quynh6", pid: "19", name: "Ngô Hương Quỳnh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "khanh6", pid: "20", name: "Ngô Quốc Khánh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "duy6_nem", pid: "20", name: "Ngô Thế Duy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "tu6", pid: "21", name: "Ngô Anh Tú", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "tra6", pid: "21", name: "Ngô Hương Trà", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "thuc6", pid: "22", name: "Ngô Văn Thức", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "linh6", pid: "22", name: "Ngô Thị Linh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "ha6", pid: "23", name: "Ngô Thị Hà", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "hien6_dung", pid: "23", name: "Ngô Thị Hiền", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "hung6_dung", pid: "23", name: "Ngô Thế Hưng", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "huyen6", pid: "24", name: "Ngô Thanh Huyền", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "hang6_chien", pid: "24", name: "Ngô Thanh Hằng", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "toan6", pid: "25", name: "Ngô Thế Toán", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "39", pid: "25", name: "Ngô Kỳ Anh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "nguyet6", pid: "26", name: "Ngô Thị Nguyệt", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "40", pid: "26", name: "Ngô Văn Quang", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "41", pid: "27", name: "Ngô Thế Liêm", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "thu6", pid: "27", name: "Ngô Anh Thư", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "ngan6", pid: "27", name: "Ngô Kim Ngân", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "trang6", pid: "28", name: "Ngô Thị Trang", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "duy6_hung", pid: "28", name: "Ngô Mạnh Duy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "42", pid: "29", name: "Ngô Xuân Nguyên", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "ngoc6", pid: "29", name: "Ngô Tiến Ngọc", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "giang6", pid: "30", name: "Ngô Hương Giang", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "que6", pid: "30", name: "Ngô Hương Quế", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "quan6", pid: "31", name: "Ngô Hồng Quân", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "hien6_huynh", pid: "31", name: "Ngô Hồng Hiển", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "tran6", pid: "32", name: "Ngô Bảo Trân", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "chi6", pid: "32", name: "Ngô Diệp Chi", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "huy6", pid: "33", name: "Ngô Quang Huy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "nguyen6_nhat", pid: "33", name: "Ngô Trấn Nguyên", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "anh6_tung", name: "Ngô Hồng Ánh", pid: "34", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "ngoc6_tung", name: "Ngô Thị Hồng Ngọc", pid: "34", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-                    { id: "ducanh6", name: "Ngô Đức Anh", pid: "34", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "kiet6", name: "Ngô Thế Kiệt", pid: "35", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-                    { id: "43", pid: "36", name: "Ngô Hương Dịu", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-                    { id: "44", pid: "36", name: "Ngô Linh Chi", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-                    { id: "45", pid: "37", name: "Ngô Yến Vy", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-                    { id: "my7_thai", pid: "37", name: "Ngô Huyền My", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-                    { id: "46", pid: "38", name: "Ngô Quốc Huy", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
-                    { id: "47", pid: "39", name: "Ngô Minh Khôi", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
-                    { id: "48", pid: "40", name: "Ngô Đan Lê", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-                    { id: "49", pid: "41", name: "Ngô Diệu My", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-                    { id: "50", pid: "42", name: "Ngô Gia Vỹ", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
-                    { id: "han7", pid: "42", name: "Ngô Gia Hân", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] }
-                ];
-                
-                // Đồng bộ mảng này lên thẳng Firebase
-                danhSachGoc.forEach(member => {
-                    db.child(member.id).set(member);
-                });
             }
-
-            // Vẽ cây và cập nhật danh sách cha
-            hienThiLaiCay();
+            capNhatGiaoDienCha();
         });
 
-        // HÀM HIỂN THỊ CÂY VÀ THAY ĐỔI Ô CHỌN CHA
-        function hienThiLaiCay() {
+        // Tải các bài viết tư liệu cũ đã lưu từ trước
+        dbArticles.on('value', function(snapshot) {
+            var data = snapshot.val();
+            if(data) {
+                if(data.lich_su) document.getElementById("txt_lich_su").value = data.lich_su;
+                if(data.mo_to) document.getElementById("txt_mo_to").value = data.mo_to;
+                if(data.quy_uoc) document.getElementById("txt_quy_uoc").value = data.quy_uoc;
+                if(data.ket_nghia) document.getElementById("txt_ket_nghia").value = data.ket_nghia;
+            }
+        });
+
+        // HÀM HIỂN THỊ DANH SÁCH CHA
+        function capNhatGiaoDienCha(danhSachLoc) {
             chart.load(giaPha);
-            
             var sel = document.getElementById("parentSelect");
-            sel.innerHTML = '<option value="">-- Chọn Cha / Mẹ --</option>';
+            sel.innerHTML = '<option value="">-- Chọn Cha --</option>';
             
-            // Sắp xếp danh sách theo tên Alphabe để dễ tìm kiếm
-            [...giaPha].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
+            var nguonDuLieu = danhSachLoc || giaPha;
+            
+            // Sắp xếp danh sách theo tên Alphabe
+            [...nguonDuLieu].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
                 var opt = document.createElement("option");
                 opt.value = p.id; 
                 opt.text = p.name + " (" + (p.title || "") + ")"; 
@@ -368,7 +296,18 @@
             });
         }
 
-        // THÊM NGƯỜI MỚI TRỰC TIẾP LÊN ĐÁM MÂY FIREBASE
+        // HÀM LỌC TÌM KIẾM CHA NHANH THEO TÊN
+        function locDanhSachCha() {
+            var tuKhoa = document.getElementById("searchParentInput").value.toLowerCase().trim();
+            if (tuKhoa === "") {
+                capNhatGiaoDienCha(giaPha);
+            } else {
+                var ketQuaLoc = giaPha.filter(p => p.name.toLowerCase().includes(tuKhoa));
+                capNhatGiaoDienCha(ketQuaLoc);
+            }
+        }
+
+        // THÊM THÀNH VIÊN
         function themNguoi() {
             var name = document.getElementById("newName").value.trim();
             var title = document.getElementById("newTitle").value.trim();
@@ -386,9 +325,8 @@
             else if(title.includes("5")) tagDoi = "doi-5";
             else if(title.includes("6")) tagDoi = "doi-6";
             
-            var uniqueId = Date.now().toString(); // Tạo ID ngẫu nhiên không trùng
+            var uniqueId = Date.now().toString();
 
-            // Đẩy bản ghi mới lên Firebase
             db.child(uniqueId).set({
                 id: uniqueId,
                 pid: pid || null,
@@ -399,13 +337,34 @@
                 tags: [tagDoi]
             });
 
-            // Reset Form nhập liệu
             document.getElementById("newName").value = "";
             document.getElementById("newTitle").value = "";
             document.getElementById("photoBase64").value = "";
+            document.getElementById("searchParentInput").value = "";
             
             if(window.innerWidth <= 768) toggleMobile();
             alert("Đã cập nhật thành công thành viên mới lên hệ thống đám mây!");
+        }
+
+        // ĐỔI TAB TƯ LIỆU BÀI VIẾT
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // LƯU BÀI VIẾT TƯ LIỆU LÊN FIREBASE
+        function luuBaiViet(tabId) {
+            var noiDung = document.getElementById("txt_" + tabId).value;
+            dbArticles.child(tabId).set(noiDung, function(error) {
+                if (error) {
+                    alert("Có lỗi xảy ra, không thể lưu!");
+                } else {
+                    alert("Đã lưu thành công bài viết tư liệu dòng họ lên hệ thống!");
+                }
+            });
         }
 
         function xuLyAnh(f) {
@@ -416,7 +375,6 @@
 
         function toggleMobile() { document.getElementById("sidebarForm").classList.toggle("open"); }
 
-        // ĐIỀU CHỈNH LAYOUT IN ẤN
         function chuanBiIn(loaiIn) {
             if (loaiIn === 'chi_nam') {
                 var chiInNam = giaPha.filter(n => n.gender === "nam");
@@ -424,18 +382,15 @@
             } else {
                 chart.load(giaPha);
             }
-
             chart.getLayout().compact = true;
             chart.fit();
-
             setTimeout(() => { 
                 window.print(); 
                 chart.getLayout().compact = false;
-                hienThiLaiCay(); 
+                capNhatGiaoDienCha(); 
             }, 800);
         }
 
-        // Tự động khởi chạy mã QR
         taoMaQR();
     </script>
 </body>
