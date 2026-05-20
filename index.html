@@ -42,7 +42,7 @@
         .page-section { display: none; width: 100%; height: 100%; position: relative; }
         .page-section.active { display: flex; }
 
-        /* CỬA SỔ POP-UP NHẬP LIỆU */
+        /* CỬA SỔ POP-UP NHẬP LIỆU & QUẢN LÝ */
         .sidebar-form {
             display: none; 
             position: fixed;
@@ -131,23 +131,29 @@
         .doi-6 rect { fill: #7e5233 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
         .doi-7 rect { fill: #2c3e50 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
 
-        /* CSS ĐẶC BIỆT: BIẾN Ô CỤ NGÔ TÀI NHÂN THÀNH VIỀN TRÒN UY NGHI & TO GẤP ĐÔI */
+        /* CSS ĐẶC BIỆT: BIẾN Ô CỦA CỤ NGÔ TÀI NHÂN THÀNH HÌNH TRÒN TUYỆT ĐỐI (KHÔNG ELÍP) VÀ CHỮ SIÊU TO */
         .o-nhan-tron-phongto rx, 
         .o-nhan-tron-phongto ry, 
         .o-nhan-tron-phongto rect {
-            rx: 50% !important; /* Bo tròn hoàn toàn thành hình Oval/Tròn */
+            rx: 50% !important; 
             ry: 50% !important;
             fill: #8b0000 !important; 
             stroke: #ffcc00 !important;
-            stroke-width: 6px !important;
+            stroke-width: 8px !important;
         }
+        /* Cân chỉnh vị trí chữ vào giữa tâm vòng tròn */
         .o-nhan-tron-phongto text[data-field="name"] {
-            font-size: 32px !important;
+            font-size: 56px !important;
             fill: #ffffff !important;
+            transform: translateY(15px);
         }
         .o-nhan-tron-phongto text[data-field="title"] {
-            font-size: 20px !important;
+            font-size: 26px !important;
             fill: #ffcc00 !important;
+            transform: translateY(25px);
+        }
+        .o-nhan-tron-phongto img {
+            display: none !important; /* Ẩn avatar mặc định để nhường không gian cho vòng tròn chữ tôn nghiêm */
         }
 
         @media screen and (max-width: 768px) {
@@ -221,7 +227,7 @@
                 </div>
 
                 <div class="form-group"><label>Thế hệ / Ghi chú:</label><input type="text" id="newTitle" placeholder="Ví dụ: Đời 8..."></div>
-                <div class="form-group"><label>Thứ tự hiển thị (Để trống tự động xếp theo thời gian nhập):</label><input type="number" id="newOrder" value="" placeholder="Ví dụ: 1, 2, 3..."></div>
+                <div class="form-group"><label>Thứ tự sắp xếp (Số nhỏ đứng bên trái, Số lớn đứng bên phải):</label><input type="number" id="newOrder" value="" placeholder="Ví dụ: 1, 2, 3..."></div>
                 <div class="form-group"><label>Ảnh chân dung:</label><input type="file" accept="image/*" onchange="xuLyAnh(this)"><input type="hidden" id="photoBase64"></div>
                 
                 <div class="form-group">
@@ -234,6 +240,9 @@
                 </div>
                 
                 <button class="btn-submit" id="btnSubmitForm" onclick="luuThanhVien()">Cập Nhật Gia Phả</button>
+                
+                <button class="btn-submit" id="btnDeleteMember" style="background:#d35400; color:white; margin-top:5px; display:none;" onclick="xoaThanhVien()">❌ XÓA BỎ THÀNH VIÊN NÀY</button>
+                
                 <button class="btn-submit" style="background:#7f8c8d; margin-top:5px;" onclick="dongModalForm()">ĐÓNG CỬA SỔ</button>
 
                 <div style="display: flex; gap: 5px; margin-top: 4px;">
@@ -328,7 +337,7 @@
                 "doi-5": { node: { width: 220, height: 85 } },
                 "doi-6": { node: { width: 180, height: 75 } },
                 "doi-7": { node: { width: 180, height: 75 } },
-                "o-nhan-tron-phongto": { node: { width: 440, height: 170 } } // Gấp đôi kích thước thông thường
+                "o-nhan-tron-phongto": { node: { width: 280, height: 280 } } // Đặt Khung hình vuông để bo tròn 50% ra hình tròn xoe tuyệt đối
             }
         });
 
@@ -339,7 +348,9 @@
                 document.getElementById("editMemberId").value = memberData.id;
                 document.getElementById("newName").value = memberData.name;
                 document.getElementById("newTitle").value = memberData.title || "";
-                document.getElementById("newOrder").value = memberData.order || "";
+                
+                // Hiển thị số thứ tự thật để quản lý dễ chỉnh sửa sắp xếp
+                document.getElementById("newOrder").value = (memberData.isAutoOrder) ? "" : memberData.order;
                 
                 if (memberData.gender === "nu") {
                     document.querySelector('input[name="newGender"][value="nu"]').checked = true;
@@ -352,6 +363,9 @@
                 
                 document.getElementById("formTitle").innerText = "SỬA THÀNH VIÊN: " + memberData.name.toUpperCase();
                 document.getElementById("btnSubmitForm").innerText = "LƯU THAY ĐỔI";
+                
+                // Hiện nút xóa khi chọn cấu trúc thành viên có sẵn
+                document.getElementById("btnDeleteMember").style.display = "block";
                 
                 document.getElementById("sidebarForm").classList.add("open");
             }
@@ -374,6 +388,9 @@
             capNhatGiaoDienCha();
             document.getElementById("formTitle").innerText = "THÊM THÀNH VIÊN MỚI";
             document.getElementById("btnSubmitForm").innerText = "THÊM VÀO GIA PHẢ";
+            
+            // Ẩn nút xóa khi thêm mới
+            document.getElementById("btnDeleteMember").style.display = "none";
             document.getElementById("sidebarForm").classList.add("open");
         }
 
@@ -390,21 +407,28 @@
         db.on('value', function(snapshot) {
             var data = snapshot.val();
             if (data) {
-                var tamGiaPha = Object.keys(data).map(key => ({
-                    id: key,
-                    pid: data[key].pid || undefined,
-                    name: data[key].name,
-                    title: data[key].title,
-                    img: data[key].img,
-                    gender: data[key].gender,
-                    tags: data[key].tags ? [...data[key].tags] : [],
-                    order: data[key].order !== undefined && data[key].order !== "" ? parseInt(data[key].order) : parseInt(key) 
-                }));
+                var tamGiaPha = Object.keys(data).map(key => {
+                    var khongCoOrder = (data[key].order === undefined || data[key].order === "");
+                    return {
+                        id: key,
+                        pid: data[key].pid || undefined,
+                        name: data[key].name,
+                        title: data[key].title,
+                        img: data[key].img,
+                        gender: data[key].gender,
+                        tags: data[key].tags ? [...data[key].tags] : [],
+                        order: khongCoOrder ? parseInt(key) : parseInt(data[key].order),
+                        isAutoOrder: khongCoOrder
+                    };
+                });
 
-                // 1. LOẠI BỎ CÁC THÀNH VIÊN NHẬP SAI HOẶC BỊ XÓA THEO YÊU CẦU
+                // 1. CHẶN LỌC TRIỆT ĐỂ KHÔNG CHO CÁC TÊN SAI XUẤT HIỆN
                 tamGiaPha = tamGiaPha.filter(n => {
-                    var nameTrim = n.name.trim();
-                    return nameTrim !== "Ngô Văn Lỵ" && nameTrim !== "Ngô Diệp chi" && nameTrim !== "Ngô Bảo chân" && nameTrim !== "Ngô Diệp Chi" && nameTrim !== "Ngô Bảo Chân";
+                    var lowName = n.name.trim().toLowerCase();
+                    return lowName !== "ngô văn lỵ" && 
+                           lowName !== "ngô diệp chi" && 
+                           lowName !== "ngô bảo chân" && 
+                           lowName !== "ngô bảo trân";
                 });
 
                 // 2. ÉP THỨ TỰ 12 NGƯỜI CON CỦA CỤ NGÔ VĨNH THẮNG
@@ -422,19 +446,20 @@
                         var viTriIndex = danhSachConOngThang.indexOf(tenXenTrim);
                         if (viTriIndex !== -1) {
                             member.pid = ongThang.id;
-                            member.order = viTriIndex + 1; // Sắp xếp cố định 1 đến 12 từ Trái qua Phải
+                            member.order = viTriIndex + 1;
+                            member.isAutoOrder = false;
                         }
                     });
                 }
 
-                // 3. XỬ LÝ BIẾN Ô CỦA CỤ NGÔ TÀI NHÂN THÀNH VIỀN TRÒN PHÓNG TO GẤP ĐÔI
+                // 3. XỬ LÝ BIẾN Ô CỦA CỤ NGÔ TÀI NHÂN THÀNH VIỀN TRÒN TUYỆT ĐỐI
                 tamGiaPha.forEach(member => {
                     if (member.name.trim() === "Ngô Tài Nhân") {
                         member.tags = ["o-nhan-tron-phongto"];
                     }
                 });
 
-                // Tự động sắp xếp: Người có số thứ tự nhỏ hơn (hoặc thời gian ID nhỏ hơn - nhập trước) sẽ đứng bên TRÁI
+                // Quản lý sắp xếp: Số nhỏ đứng TRÁI - Số lớn đứng PHẢI
                 tamGiaPha.sort((a, b) => a.order - b.order);
                 giaPha = tamGiaPha;
 
@@ -500,6 +525,27 @@
             event.target.classList.add('active');
         }
 
+        // CÔNG CỤ QUẢN LÝ: HÀM XÓA BỎ THÀNH VIÊN TRỰC TIẾP KHỎI CƠ SỞ DỮ LIỆU FIREBASE
+        function xoaThanhVien() {
+            var id = document.getElementById("editMemberId").value;
+            var tenXoa = document.getElementById("newName").value;
+            
+            if (!id) return;
+            
+            var xacNhan = confirm("BẠN CÓ CHẮC CHẮN MUỐN XÓA THÀNH VIÊN [" + tenXoa + "] KHỎI GIA PHẢ KHÔNG?\nHành động này không thể hoàn tác!");
+            if (xacNhan) {
+                db.child(id).remove(function(error) {
+                    if (!error) {
+                        alert("Đã xóa thành viên khỏi hệ thống thành công!");
+                        dongModalForm();
+                        moModalThemMoi();
+                    } else {
+                        alert("Lỗi kết nối mạng, không thể xóa!");
+                    }
+                });
+            }
+        }
+
         function luuThanhVien() {
             var id = document.getElementById("editMemberId").value;
             var name = document.getElementById("newName").value.trim();
@@ -511,7 +557,6 @@
             
             if(!name) return alert("Vui lòng nhập họ tên thành viên!");
 
-            // KHÓA CHẶN TUYỆT ĐỐI BẮT BUỘC CHỌN CHA KHI THÊM MỚI
             if (!pid && giaPha.length > 0) {
                 alert("HỆ THỐNG TỪ CHỐI LƯU: Bạn BẮT BUỘC phải tìm kiếm và chọn tên Cha từ danh sách bên dưới để liên kết cây phả hệ!");
                 return; 
@@ -533,7 +578,7 @@
                 tags: [tagDoi]
             };
 
-            // Nếu điền số thứ tự thì lấy số đó, nếu không điền sẽ để trống để tự động ăn theo ID thời gian lúc tạo
+            // Quản lý sắp xếp thủ công qua số thứ tự nhập vào
             if (orderInput !== "") {
                 duLieuLuu.order = parseInt(orderInput);
             }
@@ -559,7 +604,9 @@
                 duLieuLuu.img = img;
                 if (orderInput === "") {
                     var nguoiCuGoc = giaPha.find(n => n.id === id);
-                    duLieuLuu.order = (nguoiCuGoc && nguoiCuGoc.order !== undefined) ? nguoiCuGoc.order : "";
+                    if(nguoiCuGoc && !nguoiCuGoc.isAutoOrder) {
+                        duLieuLuu.order = nguoiCuGoc.order;
+                    }
                 }
                 
                 db.child(id).set(duLieuLuu, function(error) {
@@ -571,7 +618,7 @@
                 });
             } else {
                 if (!img) img = imgNgo;
-                var uniqueId = Date.now().toString(); // ID sinh theo mili-giây thời gian tăng dần
+                var uniqueId = Date.now().toString(); 
                 duLieuLuu.id = uniqueId;
                 duLieuLuu.img = img;
                 
