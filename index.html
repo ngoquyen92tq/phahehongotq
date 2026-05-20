@@ -70,12 +70,12 @@
         }
         .btn-submit:hover { background-color: #9c2424; color: #fff; }
 
-        /* NÚT THÊM MỚI (VẪN ĐỂ Ở TRÊN CHO DỄ THẤY) */
+        /* NÚT THÊM MỚI */
         .tree-toolbar-top {
             position: absolute; top: 15px; left: 15px; z-index: 99;
         }
 
-        /* THANH ĐIỀU KHIỂN PHÓNG TO, THU NHỎ, XEM TOÀN MÀN HÌNH CHUYỂN XUỐNG GÓC DƯỚI BÊN PHẢI */
+        /* THANH ĐIỀU KHIỂN ZOOM CHUYỂN XUỐNG GÓC DƯỚI BÊN PHẢI */
         .tree-toolbar-bottom-right {
             position: absolute; bottom: 15px; right: 15px; z-index: 99; display: flex; gap: 6px;
         }
@@ -98,10 +98,10 @@
         .article-card h2 { color: #781c1c; font-size: 22px; border-bottom: 2px solid #781c1c; padding-bottom: 10px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
         .article-card textarea { width: 100%; height: 350px; padding: 15px; border: 1px solid #8c6d31; border-radius: 8px; font-size: 15px; line-height: 1.6; font-family: inherit; box-sizing: border-box; resize: vertical; background: #fffcf7; color: #333; }
 
-        /* ẨN TOÀN BỘ THANH TÌM KIẾM MẶC ĐỊNH BỊ LỖI CỦA KHUNG PHẢ HỆ */
+        /* ẨN THANH TÌM KIẾM MẶC ĐỊNH BỊ LỖI */
         .boc-search, .boc-search input, .boc-search svg { display: none !important; }
 
-        /* DÒNG CHỮ HỘI ĐỒNG HỌ NGÔ CHUYỂN SANG GÓC DƯỚI BÊN TRÁI */
+        /* DÒNG CHỮ HỘI ĐỒNG HỌ NGÔ Ở GÓC DƯỚI BÊN TRÁI */
         .clan-footer-credit { 
             position: absolute; bottom: 15px; left: 15px; 
             background: rgba(120, 28, 28, 0.95); padding: 8px 16px; 
@@ -130,6 +130,21 @@
         .doi-5 rect { fill: #8e44ad !important; stroke: #ffffff !important; stroke-width: 1.5px !important; }
         .doi-6 rect { fill: #7e5233 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
         .doi-7 rect { fill: #2c3e50 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
+
+        /* CSS ĐẶC BIỆT DÀNH RIÊNG ĐỂ PHÓNG TO GẤP 3 LẦN Ô CỦA CỤ NGÔ TÀI NHÂN */
+        .o-nhan-phong-to rect {
+            fill: #8b0000 !important; /* Đỏ sậm uy nghi */
+            stroke: #ffcc00 !important;
+            stroke-width: 8px !important; /* Viền dày vững chãi */
+        }
+        .o-nhan-phong-to text[data-field="name"] {
+            font-size: 48px !important; /* Chữ tên phóng to gấp ~3 lần */
+            fill: #ffffff !important;
+        }
+        .o-nhan-phong-to text[data-field="title"] {
+            font-size: 32px !important; /* Chữ ghi chú phóng to gấp ~3 lần */
+            fill: #ffcc00 !important;
+        }
 
         @media screen and (max-width: 768px) {
             .header-clan { 
@@ -308,7 +323,8 @@
                 "doi-4": { node: { width: 220, height: 85 } },
                 "doi-5": { node: { width: 220, height: 85 } },
                 "doi-6": { node: { width: 180, height: 75 } },
-                "doi-7": { node: { width: 180, height: 75 } }
+                "doi-7": { node: { width: 180, height: 75 } },
+                "o-nhan-phong-to": { node: { width: 680, height: 260 } } // Gấp ~3 lần kích thước đời 4-5 thông thường
             }
         });
 
@@ -377,11 +393,14 @@
                     title: data[key].title,
                     img: data[key].img,
                     gender: data[key].gender,
-                    tags: data[key].tags,
+                    tags: data[key].tags ? [...data[key].tags] : [],
                     order: parseInt(data[key].order || 0)
                 }));
 
-                // MẢNG THỨ TỰ 12 NGƯỜI CON CỦA CỤ NGÔ VĨNH THẮNG ĐÚNG THEO YÊU CẦU
+                // 1. XỬ LÝ XÓA: Loại bỏ cụ Ngô Văn Lỵ ra khỏi cây hiển thị
+                tamGiaPha = tamGiaPha.filter(n => n.name.trim() !== "Ngô Văn Lỵ");
+
+                // 2. ÉP THỨ TỰ 12 NGƯỜI CON CỦA CỤ NGÔ VĨNH THẮNG
                 var danhSachConOngThang = [
                     "Ngô Thế Tạ", "Ngô Thị Tô", "Ngô Thị Chiêu", "Ngô Thị Lâm",
                     "Ngô Văn Phòng", "Ngô Hồng Vân", "Ngô Văn Vệ", "Ngô Thị Cửu",
@@ -394,16 +413,21 @@
                     tamGiaPha.forEach(member => {
                         var tenXenTrim = member.name.trim();
                         var viTriIndex = danhSachConOngThang.indexOf(tenXenTrim);
-                        
-                        // Nếu thuộc danh sách 12 người con này thì ép pid về cụ Thắng và gán số order tăng dần
                         if (viTriIndex !== -1) {
                             member.pid = ongThang.id;
-                            member.order = viTriIndex + 1; // Ngô Thế Tạ = 1, Ngô Thị Tô = 2... Ngô Văn Ngoan = 12
+                            member.order = viTriIndex + 1;
                         }
                     });
                 }
 
-                // Sắp xếp lại toàn bộ mảng theo thuộc tính "order" (Số nhỏ đứng trước)
+                // 3. XỬ LÝ PHÓNG TO: Tìm cụ Ngô Tài Nhân để gán class phóng to gấp 3
+                tamGiaPha.forEach(member => {
+                    if (member.name.trim() === "Ngô Tài Nhân") {
+                        member.tags = ["o-nhan-phong-to"]; // Gán tag riêng biệt
+                    }
+                });
+
+                // Sắp xếp lại mảng
                 tamGiaPha.sort((a, b) => a.order - b.order);
                 giaPha = tamGiaPha;
 
@@ -502,7 +526,6 @@
                 tags: [tagDoi]
             };
 
-            // Đồng bộ dữ liệu cứng nếu người dùng thao tác lưu thủ công trên form
             var danhSachConOngThang = [
                 "Ngô Thế Tạ", "Ngô Thị Tô", "Ngô Thị Chiêu", "Ngô Thị Lâm",
                 "Ngô Văn Phòng", "Ngô Hồng Vân", "Ngô Văn Vệ", "Ngô Thị Cửu",
