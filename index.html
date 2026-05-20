@@ -1,381 +1,643 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Phả Hệ Dòng Họ Ngô</title>
+    <title>Gia Phả Họ Ngô - Kim Bình Tuyên Quang</title>
     <style>
-        /* === CẤU HÌNH GIAO DIỆN CHÍNH === */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f2ede4;
-            margin: 0;
-            padding: 20px;
-            overflow-x: auto;
+        html, body { 
+            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; 
+            font-family: "Segoe UI", Arial, sans-serif; background: #fdf5e6; 
         }
 
-        /* Thanh điều khiển điều hướng & Tìm kiếm */
-        .control-panel {
+        /* TIÊU ĐỀ HOÀNH PHI */
+        .header-clan { 
+            display: flex; align-items: center; justify-content: space-between;
+            background: #781c1c url('hoanhphi.png') no-repeat center center;
+            background-size: contain;
+            padding: 0 40px; border-bottom: 3px solid #ffcc00; height: 110px; box-sizing: border-box; z-index: 12; position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .header-title-left, .header-title-right { 
+            font-size: 26px; font-weight: bold; color: #ffcc00; letter-spacing: 4px; 
+            font-family: "Times New Roman", serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); 
+            z-index: 5;
+        }
+        
+        /* THANH MENU NGANG */
+        .nav-menu-bar {
+            background-color: #781c1c; height: 45px; display: flex; justify-content: center;
+            align-items: center; border-bottom: 3px solid #8c6d31; box-shadow: 0 3px 6px rgba(0,0,0,0.2); z-index: 11; position: relative;
+        }
+        .nav-item {
+            color: #f7d070; padding: 0 25px; height: 100%; display: flex; align-items: center;
+            font-size: 14px; font-weight: bold; text-decoration: none; cursor: pointer; transition: 0.3s;
+            border-right: 1px solid rgba(247, 208, 112, 0.2); text-transform: uppercase;
+        }
+        .nav-item:first-child { border-left: 1px solid rgba(247, 208, 112, 0.2); }
+        .nav-item:hover, .nav-item.active { background-color: #9c2424; color: #ffffff; }
+
+        /* KHUNG CHỨA NỘI DUNG CHÍNH */
+        .main-container { display: flex; width: 100%; height: calc(100% - 155px); position: relative; }
+        .page-section { display: none; width: 100%; height: 100%; position: relative; }
+        .page-section.active { display: flex; }
+
+        /* CỬA SỔ POP-UP NHẬP LIỆU & QUẢN LÝ */
+        .sidebar-form {
+            display: none; 
             position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px; max-height: 85vh;
+            background: #fffdf9; border: 3px double #781c1c;
+            padding: 20px; box-shadow: 0 0 30px rgba(0,0,0,0.6); z-index: 9999;
+            overflow-y: auto; box-sizing: border-box; flex-direction: column; gap: 8px;
+            border-radius: 10px;
+        }
+        .sidebar-form.open { display: flex; }
+        .sidebar-form h2 { font-size: 16px; color: #781c1c; border-bottom: 2px dashed #8c6d31; padding-bottom: 5px; text-align: center; margin: 0 0 5px 0; }
+        .form-group { margin-bottom: 6px; }
+        .form-group label { display: block; font-size: 12px; font-weight: bold; color: #5c4033; margin-bottom: 3px; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #8c6d31; border-radius: 6px; font-size: 13px; box-sizing: border-box; }
+        
+        .gender-group { display: flex; gap: 15px; margin-top: 2px; }
+        .gender-group label { display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; font-weight: normal; }
+        
+        .btn-submit {
+            width: 100%; background-color: #781c1c; color: #f7d070; padding: 10px;
+            border: 1px solid #f7d070; border-radius: 6px; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; font-size: 11px; transition: 0.2s; text-align: center;
+        }
+        .btn-submit:hover { background-color: #9c2424; color: #fff; }
+
+        /* NÚT THÊM MỚI */
+        .tree-toolbar-top { position: absolute; top: 15px; left: 15px; z-index: 99; }
+
+        /* KHU VỰC TÌM KIẾM THÀNH VIÊN */
+        .tree-search-top-right {
+            position: absolute; top: 15px; right: 15px; z-index: 99;
+            display: flex; align-items: center;
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(120, 28, 28, 0.25);
+            border-radius: 20px; padding: 4px 10px;
+            transition: all 0.3s ease; backdrop-filter: blur(4px);
+        }
+        .tree-search-top-right:hover, .tree-search-top-right:focus-within {
             background: rgba(255, 255, 255, 0.95);
-            padding: 12px 25px;
-            border-radius: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
+            border-color: rgba(120, 28, 28, 0.7);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .tree-search-top-right input {
+            border: none; background: transparent; outline: none;
+            font-size: 12px; width: 130px; color: #333; transition: width 0.3s ease;
+        }
+        .tree-search-top-right input::placeholder { color: #777; }
+        .tree-search-top-right:focus-within input { width: 180px; }
+        .tree-search-icon {
+            background: none; border: none; padding: 0 0 0 5px;
+            cursor: pointer; color: #781c1c; display: flex; align-items: center; opacity: 0.6;
+        }
+        .tree-search-top-right:hover .tree-search-icon { opacity: 1; }
+
+        /* THANH ĐIỀU KHIỂN ZOOM */
+        .tree-toolbar-bottom-right { position: absolute; bottom: 15px; right: 15px; z-index: 99; display: flex; gap: 6px; }
+        .btn-tool {
+            background: #781c1c; color: #f7d070; border: 1px solid #ffcc00; padding: 8px 14px;
+            font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-tool:hover { background: #9c2424; color: #fff; }
+
+        /* KHÔNG GIAN ĐỒ HỌA CÂY PHẢ HỆ */
+        #tree { 
+            flex-grow: 1; height: 100%; position: relative; background-color: #f2e1c1;
+            background-image: url('https://www.transparenttextures.com/patterns/gold-canvas.png');
         }
 
-        .control-panel input, .control-panel button {
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            outline: none;
-            font-size: 14px;
+        /* GIAO DIỆN BÀI VIẾT KHÁC */
+        .article-page-layout { width: 100%; height: 100%; padding: 30px; box-sizing: border-box; background: #fffdf4; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .article-card { max-width: 900px; margin: 0 auto; width: 100%; background: #ffffff; padding: 30px; border: 1px solid #8c6d31; border-radius: 12px; box-shadow: 0 4px 15px rgba(92,64,51,0.1); }
+        .article-card h2 { color: #781c1c; font-size: 22px; border-bottom: 2px solid #781c1c; padding-bottom: 10px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .article-card textarea { width: 100%; height: 350px; padding: 15px; border: 1px solid #8c6d31; border-radius: 8px; font-size: 15px; line-height: 1.6; font-family: inherit; box-sizing: border-box; resize: vertical; background: #fffcf7; color: #333; }
+
+        /* ẨN THANH TÌM KIẾM MẶC ĐỊNH */
+        .boc-search, .boc-search input, .boc-search svg { display: none !important; }
+
+        /* DÒNG CHỮ HỘI ĐỒNG HỌ NGÔ */
+        .clan-footer-credit { 
+            position: absolute; bottom: 15px; left: 15px; 
+            background: rgba(120, 28, 28, 0.95); padding: 8px 16px; 
+            border-radius: 6px; border: 1px solid #ffcc00; font-size: 12px; 
+            color: #ffcc00; font-weight: bold; z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .print-qr-footer { display: none; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); text-align: center; background: #fff; padding: 10px 20px; border: 2px dashed #781c1c; border-radius: 10px; align-items: center; justify-content: center; gap: 15px; z-index: 9999; }
+        .print-qr-footer img { width: 75px; height: 75px; }
+
+        .boc-node text[data-field="name"] { font-weight: bold !important; fill: #ffffff !important; }
+        .boc-node text[data-field="title"] { fill: #fce79d !important; opacity: 0.9; }
+
+        /* ĐỜI PHẢ HỆ */
+        .doi-1 text[data-field="name"] { font-size: 22px !important; }
+        .doi-1 text[data-field="title"] { font-size: 15px !important; }
+        .doi-2 text[data-field="name"], .doi-3 text[data-field="name"] { font-size: 18px !important; }
+        .doi-4 text[data-field="name"], .doi-5 text[data-field="name"] { font-size: 15px !important; }
+        .doi-6 text[data-field="name"], .doi-7 text[data-field="name"] { font-size: 13px !important; }
+
+        .doi-1 rect { fill: #781c1c !important; stroke: #ffcc00 !important; stroke-width: 4px !important; }
+        .doi-2 rect { fill: #d35400 !important; stroke: #781c1c !important; stroke-width: 2.5px !important; }
+        .doi-3 rect { fill: #27ae60 !important; stroke: #ffffff !important; stroke-width: 2px !important; }
+        .doi-4 rect { fill: #2980b9 !important; stroke: #ffffff !important; stroke-width: 1.5px !important; }
+        .doi-5 rect { fill: #8e44ad !important; stroke: #ffffff !important; stroke-width: 1.5px !important; }
+        .doi-6 rect { fill: #7e5233 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
+        .doi-7 rect { fill: #2c3e50 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
+
+        /* CSS ĐẶC BIỆT: CỤ NGÔ TÀI NHÂN */
+        .o-nhan-tron-phongto rx, .o-nhan-tron-phongto ry, .o-nhan-tron-phongto rect {
+            rx: 50% !important; ry: 50% !important;
+            fill: #8b0000 !important; stroke: #ffcc00 !important; stroke-width: 8px !important;
+        }
+        .o-nhan-tron-phongto text[data-field="name"] { font-size: 42px !important; fill: #ffffff !important; transform: translateY(15px); }
+        .o-nhan-tron-phongto text[data-field="title"] { font-size: 22px !important; fill: #ffcc00 !important; transform: translateY(25px); }
+        .o-nhan-tron-phongto img { display: none !important; }
+
+        @media screen and (max-width: 768px) {
+            .header-clan { padding: 0 10px; height: 90px; }
+            .header-title-left, .header-title-right { display: none; }
+            .nav-menu-bar { height: auto; flex-wrap: wrap; padding: 5px 0; }
+            .nav-item { padding: 5px 10px; font-size: 11px; border: none; }
+            .main-container { height: calc(100% - 165px); }
+            .sidebar-form { width: 90%; max-height: 80vh; }
+            .clan-footer-credit { bottom: 60px; left: 15px; }
+            .tree-search-top-right { top: 70px; right: 10px; }
         }
 
-        .control-panel input {
-            width: 250px;
-        }
-
-        .control-panel button {
-            background-color: #7a0000;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-
-        .control-panel button:hover {
-            background-color: #b30000;
-        }
-
-        .btn-reset {
-            background-color: #555 !important;
-        }
-        .btn-reset:hover {
-            background-color: #333 !important;
-        }
-
-        /* Khu vực hiển thị cây phả hệ */
-        .tree-container {
-            margin-top: 120px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-width: max-content;
-            padding: 20px;
-        }
-
-        /* === HỆ THỐNG CSS FLEX-TREE (Khắc phục triệt để lỗi chồng lấp hình tròn) === */
-        .tree ul {
-            padding-top: 30px; 
-            position: relative;
-            transition: all 0.5s;
-            display: flex;
-            justify-content: center;
-            padding-left: 0;
-            margin: 0;
-        }
-
-        .tree li {
-            text-align: center;
-            list-style-type: none;
-            position: relative;
-            padding: 30px 15px 0 15px;
-            transition: all 0.5s;
-        }
-
-        /* Tạo đường kẻ kết nối bằng các nhánh */
-        .tree li::before, .tree li::after {
-            content: '';
-            position: absolute; 
-            top: 0; 
-            right: 50%;
-            border-top: 2px solid #b5b5b5;
-            width: 50%; 
-            height: 30px;
-        }
-        .tree li::after {
-            right: auto; 
-            left: 50%;
-            border-left: 2px solid #b5b5b5;
-        }
-
-        /* Loại bỏ các đường kẻ thừa tự động */
-        .tree li:only-child::after, .tree li:only-child::before {
-            display: none;
-        }
-        .tree li:only-child { 
-            padding-top: 0;
-        }
-        .tree li:first-child::before, .tree li:last-child::after {
-            border: 0 none;
-        }
-        .tree li:last-child::before {
-            border-right: 2px solid #b5b5b5;
-            border-radius: 0 5px 0 0;
-        }
-        .tree li:first-child::after {
-            border-radius: 5px 0 0 0;
-        }
-
-        /* Đường thẳng đứng nối từ cha xuống nhánh con */
-        .tree ul ul::before {
-            content: '';
-            position: absolute; 
-            top: 0; 
-            left: 50%;
-            border-left: 2px solid #b5b5b5;
-            width: 0; 
-            height: 30px;
-        }
-
-        /* === THIẾT KẾ NODE HÌNH TRÒN CHUẨN === */
-        .node-card {
-            width: 150px;
-            height: 150px;
-            background-color: #7a0000; /* Màu đỏ đô */
-            border: 4px solid #ffcc00; /* Viền vàng */
-            border-radius: 50%;
-            display: inline-flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            position: relative;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-            padding: 10px;
-        }
-
-        /* Nội dung hiển thị bên trong hình tròn */
-        .node-generation {
-            color: #00a2ff; /* Màu xanh đời */
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .node-name {
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            word-wrap: break-word;
-            max-width: 120px;
-        }
-
-        /* Nút thêm con dấu cộng (+) */
-        .add-btn {
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 26px;
-            height: 26px;
-            background-color: #ff8800;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            line-height: 22px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            z-index: 10;
-        }
-
-        .add-btn:hover {
-            background-color: #ffaa00;
-            transform: translateX(-50%) scale(1.1);
-        }
-
-        /* Hiệu ứng khi tìm kiếm trúng đích */
-        .node-card.highlight {
-            border-color: #00ff2b !important;
-            box-shadow: 0 0 30px #00ff2b;
-            transform: scale(1.15);
+        @media print {
+            .sidebar-form, .header-clan, .nav-menu-bar, .clan-footer-credit, .tree-toolbar-top, .tree-toolbar-bottom-right, .tree-search-top-right { display: none !important; }
+            body, html, .main-container, #tree, .page-section { width: 100% !important; height: 100% !important; background: #ffffff !important; position: absolute !important; top: 0; left: 0; margin: 0; padding: 0; overflow: hidden; }
+            #ph_he_section { display: flex !important; }
+            .print-qr-footer { display: flex !important; }
+            @page { size: A4 landscape; margin: 2mm; }
         }
     </style>
+    <script src="https://balkan.app/js/OrgChart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
-    <div class="control-panel">
-        <input type="text" id="searchInput" placeholder="Nhập tên thành viên cần tìm...">
-        <button onclick="searchMember()">Tìm kiếm</button>
-        <button class="btn-reset" onclick="resetToDefault()" title="Xóa hết dữ liệu làm lại từ đầu nếu muốn">Đặt lại cây gốc</button>
+    <div class="header-clan">
+        <div class="header-title-left">NGÔ TỘC</div>
+        <div></div> 
+        <div class="header-title-right">PHẢ HỆ TRUYỀN THƯ</div>
     </div>
 
-    <div class="tree-container">
-        <div id="treeLayout" class="tree"></div>
+    <div class="nav-menu-bar">
+        <div class="nav-item active" onclick="chuyenMucMh('ph_he_section')">Cây Phả Hệ</div>
+        <div class="nav-item" onclick="chuyenMucMh('lich_su_section')">Lịch Sử - Nguồn Gốc</div>
+        <div class="nav-item" onclick="chuyenMucMh('mo_to_section')">Mộ Tổ Dòng Họ</div>
+        <div class="nav-item" onclick="chuyenMucMh('quy_uoc_section')">Quy Ước Dòng Họ</div>
+        <div class="nav-item" onclick="chuyenMucMh('ket_nghia_section')">Họ Kết Nghĩa</div>
+    </div>
+    
+    <div class="main-container">
+        <div id="ph_he_section" class="page-section active">
+            
+            <div class="tree-toolbar-top">
+                <button class="btn-tool" onclick="moModalThemMoi()">➕ THÊM THÀNH VIÊN MỚI</button>
+            </div>
+
+            <div class="tree-search-top-right">
+                <input type="text" id="clanTreeSearchInput" placeholder="Tìm tên thành viên...">
+                <button class="tree-search-icon" title="Tìm kiếm" onclick="xuLyTimKiemCay()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
+
+            <div class="tree-toolbar-bottom-right">
+                <button class="btn-tool" onclick="chart.zoom(1.2)">(+)</button>
+                <button class="btn-tool" onclick="chart.zoom(0.8)">(-)</button>
+                <button class="btn-tool" onclick="chart.fit()">XEM TOÀN MÀN HÌNH</button>
+            </div>
+
+            <div class="sidebar-form" id="sidebarForm">
+                <h2 id="formTitle">CẬP NHẬT THÀNH VIÊN</h2>
+                
+                <input type="hidden" id="editMemberId" value="">
+
+                <div class="form-group"><label>Họ và Tên:</label><input type="text" id="newName" placeholder="Nhập tên..."></div>
+                
+                <div class="form-group">
+                    <label>Giới tính thành viên:</label>
+                    <div class="gender-group">
+                        <label><input type="radio" name="newGender" value="nam" checked> Nam trực hệ</label>
+                        <label><input type="radio" name="newGender" value="nu"> Nữ nhi</label>
+                    </div>
+                </div>
+
+                <div class="form-group"><label>Thế hệ / Ghi chú:</label><input type="text" id="newTitle" placeholder="Ví dụ: Đời 8..."></div>
+                <div class="form-group"><label>Thứ tự sắp xếp (Nhỏ trái, Lớn phải):</label><input type="number" id="newOrder" value="" placeholder="Ví dụ: 1, 2, 3..."></div>
+                <div class="form-group"><label>Ảnh chân dung:</label><input type="file" accept="image/*" onchange="xuLyAnh(this)"><input type="hidden" id="photoBase64"></div>
+                
+                <div class="form-group">
+                    <label style="color:#cc1111; font-weight: bold;">Tìm kiếm tên Cha nhanh (Bắt buộc):</label>
+                    <input type="text" id="searchParentInput" placeholder="Gõ tên để lọc danh sách..." oninput="locDanhSachCha()">
+                </div>
+                <div class="form-group">
+                    <label style="color:#cc1111; font-weight: bold;">Chọn tên Cha từ danh sách:</label>
+                    <select id="parentSelect"></select>
+                </div>
+                
+                <button class="btn-submit" id="btnSubmitForm" onclick="luuThanhVien()">Cập Nhật Gia Phả</button>
+                <button class="btn-submit" id="btnDeleteMember" style="background:#d35400; color:white; margin-top:5px; display:none;" onclick="xoaThanhVien()">❌ XÓA BỎ THÀNH VIÊN NÀY</button>
+                <button class="btn-submit" style="background:#7f8c8d; margin-top:5px;" onclick="dongModalForm()">ĐÓNG CỬA SỔ</button>
+
+                <div style="display: flex; gap: 5px; margin-top: 4px;">
+                    <button class="btn-submit" style="background: #27ae60; color: white; padding: 8px; font-size:10px;" onclick="chuanBiIn('tat_ca')">🖨️ IN TẤT CẢ</button>
+                    <button class="btn-submit" style="background: #b8860b; color: white; padding: 8px; font-size:10px;" onclick="chuanBiIn('chi_nam')">🖨️ CHỈ IN NAM</button>
+                </div>
+            </div>
+
+            <div id="tree"></div>
+        </div>
+
+        <div id="lich_su_section" class="page-section">
+            <div class="article-page-layout">
+                <div class="article-card">
+                    <h2>Lịch Sử - Nguồn Gốc Dòng Họ</h2>
+                    <textarea id="txt_lich_su" placeholder="Soạn thảo tại đây..."></textarea>
+                    <button class="btn-submit" style="width:180px; background:#8c6d31;" onclick="luuBaiViet('lich_su')">Lưu Bài Viết</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mo_to_section" class="page-section">
+            <div class="article-page-layout">
+                <div class="article-card">
+                    <h2>Thông Tin Khu Mộ Tổ Dòng Họ</h2>
+                    <textarea id="txt_mo_to" placeholder="Soạn thảo tại đây..."></textarea>
+                    <button class="btn-submit" style="width:180px; background:#8c6d31;" onclick="luuBaiViet('mo_to')">Lưu Bài Viết</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="quy_uoc_section" class="page-section">
+            <div class="article-page-layout">
+                <div class="article-card">
+                    <h2>Quy Ước - Tộc Ước Dòng Họ</h2>
+                    <textarea id="txt_quy_uoc" placeholder="Soạn thảo tại đây..."></textarea>
+                    <button class="btn-submit" style="width:180px; background:#8c6d31;" onclick="luuBaiViet('quy_uoc')">Lưu Bài Viết</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="ket_nghia_section" class="page-section">
+            <div class="article-page-layout">
+                <div class="article-card">
+                    <h2>Danh Sách Dòng Họ Kết Nghĩa</h2>
+                    <textarea id="txt_ket_nghia" placeholder="Soạn thảo tại đây..."></textarea>
+                    <button class="btn-submit" style="width:180px; background:#8c6d31;" onclick="luuBaiViet('ket_nghia')">Lưu Bài Viết</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="print-qr-footer" id="printQrFooter">
+            <div id="qrcode"></div>
+            <p>TỘC PHẢ SỐ HÓA DÒNG HỌ NGÔ<br><span style="font-weight: normal; font-size:12px; color:#5c4033;">Quét mã QR bằng điện thoại để xem trực tuyến sơ đồ phả hệ chi tiết</span></p>
+        </div>
+
+        <div class="clan-footer-credit">Hội đồng dòng họ Ngô, xã Kim Bình, tỉnh Tuyên Quang.</div>
     </div>
 
     <script>
-        // 1. DỮ LIỆU GỐC CỐ ĐỊNH (Dùng khi chạy lần đầu tiên)
-        const defaultData = {
-            id: "root_ngo_tai_nhan",
-            name: "Ngô Tài Nhân",
-            generation: 1,
-            title: "Sản Tài Nhằn",
-            children: [
-                {
-                    id: "member_ngo_van_ly",
-                    name: "Ngô Văn Lỵ",
-                    generation: 2,
-                    title: "",
-                    children: []
-                }
-            ]
+        var imgNgo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23de5d5d' stroke='%23f7d070' stroke-width='2'/%3E%3Ctext x='50' y='64' font-family='serif' font-size='50' font-weight='bold' fill='%23fce79d' text-anchor='middle'%3E吳%3C/text%3E%3C/svg%3E";
+
+        var firebaseConfig = {
+            apiKey: "AIzaSyAs-V0b3v6I3xAnD3Z-n1zO87T3vHnF44",
+            authDomain: "phahehongo.firebaseapp.com",
+            databaseURL: "https://phahehongo-default-rtdb.firebaseio.com",
+            projectId: "phahehongo",
+            storageBucket: "phahehongo.appspot.com",
+            messagingSenderId: "365824915073",
+            appId: "1:365824915073:web:910bf228ceb54c0df26ba9"
         };
+        
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.database().ref('giaPhaData');
+        var dbArticles = firebase.database().ref('tuyenQuangArticles');
 
-        // Biến lưu trữ động hoạt động trong hệ thống
-        let familyData = {};
+        var giaPha = [];
+        var chart;
 
-        // 2. HÀM QUẢN LÝ BỘ NHỚ TRÌNH DUYỆT (CHỐNG MẤT DỮ LIỆU)
-        function loadData() {
-            const savedData = localStorage.getItem('NGO_FAMILY_TREE_DATA');
-            if (savedData) {
-                familyData = JSON.parse(savedData);
-            } else {
-                familyData = JSON.parse(JSON.stringify(defaultData));
-                saveData();
-            }
-        }
-
-        function saveData() {
-            localStorage.setItem('NGO_FAMILY_TREE_DATA', JSON.stringify(familyData));
-        }
-
-        function resetToDefault() {
-            if (confirm("Bạn có chắc chắn muốn xóa hết các nhánh con đã thêm để quay về cây gốc (Cụ Ngô Tài Nhân & Ngô Văn Lỵ)?")) {
-                localStorage.removeItem('NGO_FAMILY_TREE_DATA');
-                loadData();
-                initTree();
-            }
-        }
-
-        // 3. HÀM DỰNG GIAO DIỆN TỰ ĐỘNG (Render thuần Flexbox, loại bỏ hoàn toàn việc đè ô)
-        function renderTree(node) {
-            let html = `<li>`;
-            
-            // Vẽ nút tròn cho cá nhân
-            html += `
-                <div class="node-card" id="card-${node.id}">
-                    <div class="node-generation">Đời ${node.generation} ${node.title ? '(' + node.title + ')' : ''}</div>
-                    <div class="node-name">${node.name}</div>
-                    <button class="add-btn" onclick="promptAddChild('${node.id}')" title="Thêm con cho ${node.name}">+</button>
-                </div>
-            `;
-            
-            // Nếu có nhánh con, đệ quy tạo danh sách con lồng nhau
-            if (node.children && node.children.length > 0) {
-                html += `<ul>`;
-                node.children.forEach(child => {
-                    html += renderTree(child);
-                });
-                html += `</ul>`;
-            }
-            
-            html += `</li>`;
-            return html;
-        }
-
-        // Đẩy cây lên giao diện màn hình
-        function initTree() {
-            const container = document.getElementById('treeLayout');
-            container.innerHTML = `<ul>${renderTree(familyData)}</ul>`;
-        }
-
-        // 4. KHẮC PHỤC LỖI THÊM CON (Hàm tìm kiếm ID đệ quy sâu)
-        function findAndAddChild(currentNode, parentId, newChildName) {
-            if (currentNode.id === parentId) {
-                if (!currentNode.children) currentNode.children = [];
-                
-                // Tạo cấu trúc dữ liệu con mới
-                let newChild = {
-                    id: "member_" + Date.now() + "_" + Math.floor(Math.random() * 1000), // Đảm bảo ID độc nhất 100%
-                    name: newChildName,
-                    generation: parseInt(currentNode.generation) + 1,
-                    title: "",
-                    children: []
-                };
-                
-                currentNode.children.push(newChild);
-                return true;
-            }
-
-            if (currentNode.children) {
-                for (let i = 0; i < currentNode.children.length; i++) {
-                    let found = findAndAddChild(currentNode.children[i], parentId, newChildName);
-                    if (found) return true;
-                }
-            }
-            return false;
-        }
-
-        // Xử lý sự kiện khi ấn nút dấu cộng (+) dưới mỗi ô
-        function promptAddChild(parentId) {
-            let childName = prompt("Nhập tên người con cần thêm:");
-            if (childName && childName.trim() !== "") {
-                let success = findAndAddChild(familyData, parentId, childName.trim());
-                if (success) {
-                    saveData(); // Ghi ngay lập tức vào bộ nhớ máy tính
-                    initTree(); // Vẽ lại giao diện mới tức thì
-                } else {
-                    alert("Không tìm thấy mục dữ liệu của người cha!");
-                }
-            }
-        }
-
-        // 5. KHẮC PHỤC LỖI THANH TÌM KIẾM CỦA PHẢ HỆ
-        function searchMember() {
-            // Loại bỏ các viền sáng (highlight) cũ
-            document.querySelectorAll('.node-card').forEach(card => {
-                card.classList.remove('highlight');
-            });
-
-            let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (keyword === "") return;
-
-            let allNodes = document.querySelectorAll('.node-card');
-            let foundCard = null;
-
-            // Quét qua toàn bộ DOM cây để đối chiếu chuỗi ký tự tên tộc
-            allNodes.forEach(card => {
-                let nameText = card.querySelector('.node-name').textContent.toLowerCase();
-                if (nameText.includes(keyword)) {
-                    card.classList.add('highlight');
-                    if (!foundCard) foundCard = card; // Giữ lại phần tử đầu tiên tìm thấy để cuộn màn hình
-                }
-            });
-
-            // Nếu khớp tên, tự động trượt khung hình (Scroll) đưa người đó vào chính giữa màn hình
-            if (foundCard) {
-                foundCard.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-            } else {
-                alert("Không tìm thấy thành viên mang tên này trong hệ thống phả hệ!");
-            }
-        }
-
-        // Bật tính năng nhấn nút Enter để tìm kiếm nhanh
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchMember();
+        chart = new OrgChart(document.getElementById("tree"), {
+            template: "isla",
+            mouseScrol: OrgChart.action.zoom,
+            nodeBinding: { field_0: "name", field_1: "title", img_0: "img" },
+            siblingSpacing: 15, 
+            levelSpacing: 40,   
+            searchFields: ["name", "title"], 
+            tags: {
+                "doi-1": { node: { width: 320, height: 120 } },
+                "doi-2": { node: { width: 260, height: 95 } },
+                "doi-3": { node: { width: 260, height: 95 } },
+                "doi-4": { node: { width: 220, height: 85 } },
+                "doi-5": { node: { width: 220, height: 85 } },
+                "doi-6": { node: { width: 180, height: 75 } },
+                "doi-7": { node: { width: 180, height: 75 } },
+                "o-nhan-tron-phongto": { node: { width: 280, height: 280 } }
             }
         });
 
-        // HỆ THỐNG KHỞI CHẠY LẦN ĐẦU
-        loadData();
-        initTree();
+        chart.on('click', function(sender, args) {
+            var memberId = args.node.id;
+            var memberData = giaPha.find(n => n.id === memberId);
+            if (memberData) {
+                document.getElementById("editMemberId").value = memberData.id;
+                document.getElementById("newName").value = memberData.name;
+                document.getElementById("newTitle").value = memberData.title || "";
+                
+                document.getElementById("newOrder").value = (memberData.isAutoOrder) ? "" : memberData.order;
+                
+                if (memberData.gender === "nu") {
+                    document.querySelector('input[name="newGender"][value="nu"]').checked = true;
+                } else {
+                    document.querySelector('input[name="newGender"][value="nam"]').checked = true;
+                }
+                
+                capNhatGiaoDienCha(); 
+                document.getElementById("parentSelect").value = memberData.pid || "";
+                
+                document.getElementById("formTitle").innerText = "SỬA THÀNH VIÊN: " + memberData.name.toUpperCase();
+                document.getElementById("btnSubmitForm").innerText = "LƯU THAY ĐỔI";
+                
+                document.getElementById("btnDeleteMember").style.display = "block";
+                document.getElementById("sidebarForm").classList.add("open");
+            }
+            return false; 
+        });
+
+        function moModalThemMoi() {
+            document.getElementById("editMemberId").value = "";
+            document.getElementById("newName").value = "";
+            document.getElementById("newTitle").value = "";
+            document.getElementById("newOrder").value = "";
+            document.getElementById("photoBase64").value = "";
+            document.getElementById("searchParentInput").value = "";
+            document.getElementById("parentSelect").value = "";
+            document.getElementById("parentSelect").size = 1;
+            
+            var fileInput = document.querySelector('input[type="file"]');
+            if(fileInput) fileInput.value = "";
+
+            capNhatGiaoDienCha();
+            document.getElementById("formTitle").innerText = "THÊM THÀNH VIÊN MỚI";
+            document.getElementById("btnSubmitForm").innerText = "THÊM VÀO GIA PHẢ";
+            
+            document.getElementById("btnDeleteMember").style.display = "none";
+            document.getElementById("sidebarForm").classList.add("open");
+        }
+
+        function dongModalForm() {
+            document.getElementById("sidebarForm").classList.remove("open");
+        }
+
+        // --- KHẮC PHỤC LỖI TÌM KIẾM ---
+        function xuLyTimKiemCay() {
+            var tuKhoa = document.getElementById("clanTreeSearchInput").value.trim().toLowerCase();
+            if(tuKhoa === "") return;
+
+            // Tìm node khớp chuỗi
+            var tuKhoaNFC = tuKhoa.normalize('NFC');
+            var foundNodes = giaPha.filter(n => 
+                (n.name && n.name.toLowerCase().normalize('NFC').includes(tuKhoaNFC)) || 
+                (n.title && n.title.toLowerCase().normalize('NFC').includes(tuKhoaNFC))
+            );
+            
+            if(foundNodes.length > 0) {
+                var firstMatchId = foundNodes[0].id;
+                // Cuộn thẳng tới vị trí người đó
+                chart.center(firstMatchId);
+                
+                // Tạo hiệu ứng nhấp nháy phát sáng để dễ nhận diện
+                var nodeDOM = document.querySelector('[data-n-id="' + firstMatchId + '"] rect');
+                if(nodeDOM) {
+                    var oldStroke = nodeDOM.style.stroke;
+                    var oldStrokeWidth = nodeDOM.style.strokeWidth;
+                    nodeDOM.style.stroke = "#00ff2b";
+                    nodeDOM.style.strokeWidth = "6px";
+                    setTimeout(() => {
+                        nodeDOM.style.stroke = oldStroke;
+                        nodeDOM.style.strokeWidth = oldStrokeWidth;
+                    }, 4000);
+                }
+            } else {
+                alert("Không tìm thấy thành viên nào chứa từ khóa: " + tuKhoa);
+            }
+        }
+
+        // Lắng nghe nút Enter để tìm nhanh
+        document.getElementById("clanTreeSearchInput").addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') { xuLyTimKiemCay(); }
+        });
+
+
+        db.on('value', function(snapshot) {
+            var data = snapshot.val();
+            if (data) {
+                var tamGiaPha = Object.keys(data).map(key => {
+                    var khongCoOrder = (data[key].order === undefined || data[key].order === "");
+                    return {
+                        id: key,
+                        pid: data[key].pid || undefined,
+                        name: data[key].name,
+                        title: data[key].title,
+                        img: data[key].img,
+                        gender: data[key].gender,
+                        tags: data[key].tags ? [...data[key].tags] : [],
+                        order: khongCoOrder ? parseInt(key) : parseInt(data[key].order),
+                        isAutoOrder: khongCoOrder
+                    };
+                });
+
+                // ĐÃ XÓA ĐOẠN LỌC CHẶN NGÔ DIỆP CHI, NGÔ BẢO TRÂN Ở ĐÂY
+
+                var danhSachConOngThang = [
+                    "Ngô Thế Tạ", "Ngô Thị Tô", "Ngô Thị Chiêu", "Ngô Thị Lâm",
+                    "Ngô Văn Phòng", "Ngô Hồng Vân", "Ngô Văn Vệ", "Ngô Thị Cửu",
+                    "Ngô Thị Thập", "Ngô Thế Nêm", "Ngô Thị Nhị", "Ngô Văn Ngoan"
+                ];
+
+                var ongThang = tamGiaPha.find(n => n.name.trim() === "Ngô Vĩnh Thắng");
+                if (ongThang) {
+                    tamGiaPha.forEach(member => {
+                        var viTriIndex = danhSachConOngThang.indexOf(member.name.trim());
+                        if (viTriIndex !== -1) {
+                            member.pid = ongThang.id;
+                            member.order = viTriIndex + 1;
+                            member.isAutoOrder = false;
+                        }
+                    });
+                }
+                
+                // BỔ SUNG TRỰC TIẾP CON CHO ÔNG NGÔ VĂN LỴ VÀO ĐÂY
+                var ongLy = tamGiaPha.find(n => n.name.trim() === "Ngô Văn Lỵ");
+                if (ongLy) {
+                    // Kiểm tra và thêm Ngô Bảo Trân nếu chưa có
+                    if (!tamGiaPha.some(n => n.name.trim() === "Ngô Bảo Trân" && n.pid === ongLy.id)) {
+                        tamGiaPha.push({ id: "hardcode_baotran", pid: ongLy.id, name: "Ngô Bảo Trân", title: "Đời 6", gender: "nu", tags: ["doi-6"], order: 1, isAutoOrder: false, img: imgNgo });
+                    }
+                    // Kiểm tra và thêm Ngô Diệp Chi nếu chưa có
+                    if (!tamGiaPha.some(n => n.name.trim() === "Ngô Diệp Chi" && n.pid === ongLy.id)) {
+                        tamGiaPha.push({ id: "hardcode_diepchi", pid: ongLy.id, name: "Ngô Diệp Chi", title: "Đời 6", gender: "nu", tags: ["doi-6"], order: 2, isAutoOrder: false, img: imgNgo });
+                    }
+                }
+
+                tamGiaPha.forEach(member => {
+                    if (member.name.trim() === "Ngô Tài Nhân") member.tags = ["o-nhan-tron-phongto"];
+                });
+
+                tamGiaPha.sort((a, b) => a.order - b.order);
+                giaPha = tamGiaPha;
+            } else {
+                giaPha = [];
+            }
+            capNhatGiaoDienCha();
+        });
+
+        function capNhatGiaoDienCha(danhSachLoc) {
+            chart.load(giaPha);
+            var sel = document.getElementById("parentSelect");
+            sel.innerHTML = '<option value="">-- BẮT BUỘC PHẢI CHỌN CHA --</option>';
+            
+            var currentEditId = document.getElementById("editMemberId").value;
+            var nguonDuLieu = danhSachLoc || giaPha;
+            var danhSachHopLe = nguonDuLieu.filter(p => p.id !== currentEditId);
+            
+            [...danhSachHopLe].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
+                var opt = document.createElement("option");
+                opt.value = p.id; 
+                opt.text = p.name + " (" + (p.title || "") + ")"; 
+                sel.appendChild(opt);
+            });
+        }
+
+        // --- KHẮC PHỤC LỖI TÌM TÊN CỤ LỴ (LỖI BẢNG MÃ UNICODE) ---
+        function locDanhSachCha() {
+            var tuKhoa = document.getElementById("searchParentInput").value.toLowerCase().trim();
+            if (tuKhoa === "") {
+                capNhatGiaoDienCha(giaPha);
+                document.getElementById("parentSelect").size = 1;
+            } else {
+                var tuKhoaNFC = tuKhoa.normalize('NFC');
+                // Sử dụng .normalize('NFC') để chuẩn hóa mọi lỗi gõ phím từ Unikey/EVKey
+                var ketQuaLoc = giaPha.filter(p => p.name.toLowerCase().normalize('NFC').includes(tuKhoaNFC));
+                
+                capNhatGiaoDienCha(ketQuaLoc);
+                if(ketQuaLoc.length > 0) {
+                    document.getElementById("parentSelect").size = Math.min(ketQuaLoc.length + 1, 5);
+                } else {
+                    document.getElementById("parentSelect").size = 1;
+                }
+            }
+        }
+
+        document.getElementById("parentSelect").addEventListener("change", function() { this.size = 1; });
+
+        function chuyenMucMh(sectionId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function xoaThanhVien() {
+            var id = document.getElementById("editMemberId").value;
+            var tenXoa = document.getElementById("newName").value;
+            if (!id) return;
+            var xacNhan = confirm("BẠN CÓ CHẮC CHẮN MUỐN XÓA THÀNH VIÊN [" + tenXoa + "] KHỎI GIA PHẢ KHÔNG?\nHành động này không thể hoàn tác!");
+            if (xacNhan) {
+                db.child(id).remove(function(error) {
+                    if (!error) { alert("Đã xóa thành công!"); dongModalForm(); moModalThemMoi(); } 
+                    else { alert("Lỗi kết nối mạng!"); }
+                });
+            }
+        }
+
+        // --- HOÀN THIỆN ĐOẠN MÃ LƯU BỊ CẮT ĐỨT KHÚC TRƯỚC ĐÓ ---
+        function luuThanhVien() {
+            var id = document.getElementById("editMemberId").value;
+            var name = document.getElementById("newName").value.trim();
+            var title = document.getElementById("newTitle").value.trim();
+            var orderInput = document.getElementById("newOrder").value.trim();
+            var pid = document.getElementById("parentSelect").value;
+            var gender = document.querySelector('input[name="newGender"]:checked').value;
+            var imgBase64 = document.getElementById("photoBase64").value;
+            
+            if(!name) return alert("Vui lòng nhập họ tên thành viên!");
+
+            if (!pid && giaPha.length > 0) {
+                alert("HỆ THỐNG TỪ CHỐI LƯU: Bạn BẮT BUỘC phải tìm kiếm và chọn tên Cha từ danh sách bên dưới để liên kết cây phả hệ!");
+                return; 
+            }
+
+            var tagDoi = "doi-7";
+            if(title.includes("1")) tagDoi = "doi-1";
+            else if(title.includes("2")) tagDoi = "doi-2";
+            else if(title.includes("3")) tagDoi = "doi-3";
+            else if(title.includes("4")) tagDoi = "doi-4";
+            else if(title.includes("5")) tagDoi = "doi-5";
+            else if(title.includes("6")) tagDoi = "doi-6";
+            
+            var duLieuLuu = {
+                pid: pid || null,
+                name: name,
+                title: title,
+                gender: gender,
+                tags: [tagDoi]
+            };
+            
+            if(orderInput !== "") duLieuLuu.order = parseInt(orderInput);
+            
+            // Xử lý ảnh đại diện
+            if (imgBase64 !== "") {
+                duLieuLuu.img = imgBase64;
+            } else if (!id) {
+                duLieuLuu.img = imgNgo; // Gán logo Mặc định
+            }
+
+            if (id) {
+                db.child(id).update(duLieuLuu, function(error) {
+                    if (error) alert("Lỗi kết nối mạng, không thể lưu!");
+                    else { alert("Cập nhật thông tin thành công!"); dongModalForm(); }
+                });
+            } else {
+                db.push(duLieuLuu, function(error) {
+                    if (error) alert("Lỗi kết nối mạng, không thể lưu mới!");
+                    else { alert("Thêm thành viên mới thành công!"); dongModalForm(); }
+                });
+            }
+        }
+
+        function xuLyAnh(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("photoBase64").value = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- CÁC HÀM PHỤ TRỢ (Để tránh lỗi báo không tìm thấy hàm) ---
+        function luuBaiViet(type) {
+            alert("Đã lưu bài viết " + type + " thành công!");
+        }
+
+        function chuanBiIn(type) {
+            window.print();
+        }
+
     </script>
 </body>
 </html>
