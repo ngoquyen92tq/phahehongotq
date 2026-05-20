@@ -95,17 +95,16 @@
         @media print {
             .sidebar-form, .header-clan, .mobile-toggle-btn, .clan-footer-credit, .boc-search, .boc-toolbar { display: none !important; }
             body, html, .main-container, #tree { width: 100% !important; height: 100% !important; background: #ffffff !important; position: absolute !important; top: 0; left: 0; margin: 0; padding: 0; overflow: hidden; }
-            
-            /* Hiện phần ghi chú quét mã QR trên bản in */
             .print-qr-footer { display: flex !important; }
-            
             @page { 
                 size: A4 landscape; 
-                margin: 2mm 2mm 25mm 2mm; /* Dành khoảng trống dưới đáy cho cụm QR */
+                margin: 2mm 2mm 25mm 2mm; 
             }
         }
     </style>
     <script src="https://balkan.app/js/OrgChart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
@@ -153,150 +152,31 @@
     <script>
         var imgNgo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23de5d5d' stroke='%23f7d070' stroke-width='2'/%3E%3Ctext x='50' y='64' font-family='serif' font-size='50' font-weight='bold' fill='%23fce79d' text-anchor='middle'%3E吳%3C/text%3E%3C/svg%3E";
 
-        var giaPha = [
-            // ĐỜI 1
-            { id: "1", name: "Ngô Tài Nhân", title: "Đời 1 (Sản Tài Nhằn)", img: imgNgo, gender: "nam", tags: ["doi-1"] },
-            // ĐỜI 2
-            { id: "2", pid: "1", name: "Ngô Văn Sáng", title: "Đời 2", img: imgNgo, gender: "nam", tags: ["doi-2"] },
-            { id: "3", pid: "1", name: "Ngô Văn Sở", title: "Đời 2", img: imgNgo, gender: "nam", tags: ["doi-2"] },
-            // ĐỜI 3
-            { id: "4", pid: "2", name: "Ngô Văn Hồng", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-            { id: "5", pid: "2", name: "Ngô Văn Hào", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-            { id: "6", pid: "3", name: "Ngô Văn Minh", title: "Đời 3 (Vĩnh Phương)", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-            { id: "7", pid: "3", name: "Ngô Văn Đường", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-            { id: "8", pid: "3", name: "Ngô Văn Xuyến", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-            { id: "deng3", pid: "3", name: "Ngô Thị Đeng", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
-            { id: "dao3", pid: "3", name: "Ngô Văn Đào", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
-            { id: "quy3", pid: "3", name: "Ngô Thị Quý", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
-            { id: "mao3", pid: "3", name: "Ngô Thị Mão", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
-            // ĐỜI 4
-            { id: "9", pid: "4", name: "Ngô Văn Tâm", title: "Đời 4 (Hà Văn Tâm)", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            { id: "tham4_hao", pid: "5", name: "Ngô Thị Thầm", title: "Đời 4 (Hà Thị Thầm)", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-            { id: "yen4", pid: "6", name: "Ngô Thị Yên", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-            { id: "tien4", pid: "6", name: "Ngô Thị Tiến", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-            { id: "10", pid: "6", name: "Ngô Vĩnh Thắng", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            { id: "giang4", pid: "6", name: "Ngô Văn Giảng", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            { id: "nau4", pid: "6", name: "Ngô Thị Nậu", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-            { id: "11", pid: "6", name: "Ngô Xuân Đối", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            { id: "bao4", pid: "7", name: "Ngô Thị Bảo", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-            { id: "12", pid: "7", name: "Ngô Văn Thầm", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            { id: "thi4", pid: "7", name: "Ngô Văn Thì", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            { id: "13", pid: "7", name: "Ngô Hồng Kinh", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            { id: "14", pid: "7", name: "Ngô Xuân Khoa", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            { id: "vang4", pid: "8", name: "Ngô Thị Vàng", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
-            { id: "15", pid: "8", name: "Ngô Thế Hiệp", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
-            // ĐỜI 5
-            { id: "linh5", pid: "9", name: "Hà Văn Lịnh", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "16", pid: "10", name: "Ngô Thế Tạ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "to5", pid: "10", name: "Ngô Thị Tô", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "chieu5", pid: "10", name: "Ngô Thị Chiêu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "lam5", pid: "10", name: "Ngô Thị Lâm", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "17", pid: "10", name: "Ngô Văn Phòng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "18", pid: "10", name: "Ngô Hồng Vân", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "19", pid: "10", name: "Ngô Văn Vệ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "cuu5", pid: "10", name: "Ngô Thị Cửu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "thap5", pid: "10", name: "Ngô Thị Thập", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "20", pid: "10", name: "Ngô Thế Nêm", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "nhi5", pid: "10", name: "Ngô Thị Nhị", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "21", pid: "10", name: "Ngô Văn Ngoan", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "22", pid: "11", name: "Ngô Văn Thưởng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "tam5_doi", pid: "11", name: "Ngô Thị Tâm", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "hien5_doi", pid: "11", name: "Ngô Thị Hiền", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "hau5_doi", pid: "11", name: "Ngô Thị Hậu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "cuong5_doi", pid: "11", name: "Ngô Thị Cương", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "my5_doi", pid: "11", name: "Ngô Thị Mỵ", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "diem5", pid: "11", name: "Ngô Thế Diệm", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "chuong5", pid: "12", name: "Ngô Thị Chương", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "23", pid: "12", name: "Ngô Văn Dung", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "24", pid: "12", name: "Ngô Văn Chiến", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "nga5", pid: "12", name: "Ngô Thị Nga", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "25", pid: "12", name: "Ngô Hồng Văn", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "tuc5", pid: "13", name: "Ngô Thị Túc", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "26", pid: "13", name: "Ngô Văn Chính", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "minh5_kinh", pid: "13", name: "Ngô Thị Mình", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "hoa5", pid: "13", name: "Ngô Thị Hoa", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "27", pid: "13", name: "Ngô Văn Đa", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "nhanh5", pid: "13", name: "Ngô Thị Nhanh", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "hop5", pid: "13", name: "Ngô Thị Hợp", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "28", pid: "14", name: "Ngô Văn Hùng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "29", pid: "14", name: "Ngô Xuân Lượng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "luc5", pid: "14", name: "Ngô Thị Lục", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "chieu5_khoa", pid: "14", name: "Ngô Thị Chiều", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "khan5", pid: "14", name: "Ngô Thị Khăn", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "30", pid: "14", name: "Ngô Văn Dứa", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "31", pid: "14", name: "Ngô Văn Huỳnh", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "32", pid: "14", name: "Ngô Văn Lỵ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "nhai5", pid: "14", name: "Ngô Thị Nhài", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "chung5", pid: "15", name: "Ngô Thị Chúng", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "33", pid: "15", name: "Ngô Thế Nhật", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "34", pid: "15", name: "Ngô Thế Tùng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            { id: "bach5", pid: "15", name: "Ngô Thị Bạch", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "hang5", pid: "15", name: "Ngô Thị Hằng", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
-            { id: "35", pid: "15", name: "Ngô Thế Du", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
-            // ĐỜI 6
-            { id: "36", pid: "16", name: "Ngô Thế Nghiệp", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "hoai6", pid: "16", name: "Ngô Thị Hoài", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "thieu6", pid: "16", name: "Ngô Thị Thiêu", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "37", pid: "17", name: "Ngô Hồng Thái", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "thanh6", pid: "17", name: "Ngô Kim Thanh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "38", pid: "18", name: "Ngô Quyền", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "tuananh6", pid: "18", name: "Ngô Tuấn Anh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "thuy6", pid: "19", name: "Ngô Xuân Thụy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "quynh6", pid: "19", name: "Ngô Hương Quỳnh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "khanh6", pid: "20", name: "Ngô Quốc Khánh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "duy6_nem", pid: "20", name: "Ngô Thế Duy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "tu6", pid: "21", name: "Ngô Anh Tú", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "tra6", pid: "21", name: "Ngô Hương Trà", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "thuc6", pid: "22", name: "Ngô Văn Thức", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "linh6", pid: "22", name: "Ngô Thị Linh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "ha6", pid: "23", name: "Ngô Thị Hà", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "hien6_dung", pid: "23", name: "Ngô Thị Hiền", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "hung6_dung", pid: "23", name: "Ngô Thế Hưng", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "huyen6", pid: "24", name: "Ngô Thanh Huyền", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "hang6_chien", pid: "24", name: "Ngô Thanh Hằng", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "toan6", pid: "25", name: "Ngô Thế Toán", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "39", pid: "25", name: "Ngô Kỳ Anh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "nguyet6", pid: "26", name: "Ngô Thị Nguyệt", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "40", pid: "26", name: "Ngô Văn Quang", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "41", pid: "27", name: "Ngô Thế Liêm", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "thu6", pid: "27", name: "Ngô Anh Thư", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "ngan6", pid: "27", name: "Ngô Kim Ngân", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "trang6", pid: "28", name: "Ngô Thị Trang", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "duy6_hung", pid: "28", name: "Ngô Mạnh Duy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "42", pid: "29", name: "Ngô Xuân Nguyên", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "ngoc6", pid: "29", name: "Ngô Tiến Ngọc", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "giang6", pid: "30", name: "Ngô Hương Giang", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "que6", pid: "30", name: "Ngô Hương Quế", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "quan6", pid: "31", name: "Ngô Hồng Quân", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "hien6_huynh", pid: "31", name: "Ngô Hồng Hiển", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "tran6", pid: "32", name: "Ngô Bảo Trân", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "chi6", pid: "32", name: "Ngô Diệp Chi", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "huy6", pid: "33", name: "Ngô Quang Huy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "nguyen6_nhat", pid: "33", name: "Ngô Trấn Nguyên", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "anh6_tung", name: "Ngô Hồng Ánh", pid: "34", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "ngoc6_tung", name: "Ngô Thị Hồng Ngọc", pid: "34", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
-            { id: "ducanh6", name: "Ngô Đức Anh", pid: "34", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            { id: "kiet6", name: "Ngô Thế Kiệt", pid: "35", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
-            // ĐỜI 7
-            { id: "43", pid: "36", name: "Ngô Hương Dịu", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-            { id: "44", pid: "36", name: "Ngô Linh Chi", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-            { id: "45", pid: "37", name: "Ngô Yến Vy", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-            { id: "my7_thai", pid: "37", name: "Ngô Huyền My", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-            { id: "46", pid: "38", name: "Ngô Quốc Huy", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
-            { id: "47", pid: "39", name: "Ngô Minh Khôi", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
-            { id: "48", pid: "40", name: "Ngô Đan Lê", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-            { id: "49", pid: "41", name: "Ngô Diệu My", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
-            { id: "50", pid: "42", name: "Ngô Gia Vỹ", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
-            { id: "han7", pid: "42", name: "Ngô Gia Hân", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] }
-        ];
+        // ĐÃ ĐIỀN THÔNG TIN FIREBASE HOÀN CHỈNH CHO BẠN
+        var firebaseConfig = {
+            apiKey: "AIzaSyAs-V0b3v6I3xAnD3Z-n1zO87T3vHnF44",
+            authDomain: "phahehongo.firebaseapp.com",
+            databaseURL: "https://phahehongo-default-rtdb.firebaseio.com",
+            projectId: "phahehongo",
+            storageBucket: "phahehongo.appspot.com",
+            messagingSenderId: "365824915073",
+            appId: "1:365824915073:web:910bf228ceb54c0df26ba9"
+        };
+        
+        // Khởi tạo Firebase kết nối đám mây
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.database().ref('giaPhaData');
+
+        var giaPha = [];
+        var chart;
 
         // KHỞI TẠO BẢN ĐỒ VỚI ĐỊNH DẠNG PHÂN CẤP KÍCH THƯỚC Ô VÀ KHOẢNG CÁCH THU GỌN
-        var chart = new OrgChart(document.getElementById("tree"), {
+        chart = new OrgChart(document.getElementById("tree"), {
             template: "isla",
             mouseScrol: OrgChart.action.zoom,
             nodeBinding: { field_0: "name", field_1: "title", img_0: "img" },
-            siblingSpacing: 15, // Ép sát khoảng cách các ô cùng đời để không bị bè ngang
-            levelSpacing: 40,   // Ép sát khoảng cách chiều dọc giữa các thế hệ
+            siblingSpacing: 15, 
+            levelSpacing: 40,   
             tags: {
                 "doi-1": { node: { width: 320, height: 120 } },
                 "doi-2": { node: { width: 260, height: 95 } },
@@ -308,23 +188,187 @@
             }
         });
 
-        // TỰ ĐỘNG TẠO MÃ QR CODE CHO ĐỊA CHỈ TRANG WEB HIỆN TẠI ĐỂ MỌI ĐIỆN THOẠI ĐỀU QUÉT ĐƯỢC
+        // TỰ ĐỘNG TẠO MÃ QR CODE CHO ĐỊA CHỈ TRANG WEB HIỆN TẠI
         function taoMaQR() {
             var urlHienTai = window.location.href;
             var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(urlHienTai);
             document.getElementById("qrcode").innerHTML = '<img src="' + qrUrl + '" alt="QR Phả Hệ">';
         }
 
-        function reload() {
+        // LẮNG NGHE DỮ LIỆU ONLINE TỪ FIREBASE
+        db.on('value', function(snapshot) {
+            var data = snapshot.val();
+            
+            if (data) {
+                // Nếu trên cơ sở dữ liệu đã có người, tải dữ liệu đó về máy
+                giaPha = Object.keys(data).map(key => ({
+                    id: key,
+                    pid: data[key].pid || undefined,
+                    name: data[key].name,
+                    title: data[key].title,
+                    img: data[key].img,
+                    gender: data[key].gender,
+                    tags: data[key].tags
+                }));
+            } else {
+                // Nếu cơ sở dữ liệu trống tinh (lần đầu chạy), đẩy danh sách gốc lên đám mây làm nền móng
+                var danhSachGoc = [
+                    { id: "1", name: "Ngô Tài Nhân", title: "Đời 1 (Sản Tài Nhằn)", img: imgNgo, gender: "nam", tags: ["doi-1"] },
+                    { id: "2", pid: "1", name: "Ngô Văn Sáng", title: "Đời 2", img: imgNgo, gender: "nam", tags: ["doi-2"] },
+                    { id: "3", pid: "1", name: "Ngô Văn Sở", title: "Đời 2", img: imgNgo, gender: "nam", tags: ["doi-2"] },
+                    { id: "4", pid: "2", name: "Ngô Văn Hồng", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
+                    { id: "5", pid: "2", name: "Ngô Văn Hào", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
+                    { id: "6", pid: "3", name: "Ngô Văn Minh", title: "Đời 3 (Vĩnh Phương)", img: imgNgo, gender: "nam", tags: ["doi-3"] },
+                    { id: "7", pid: "3", name: "Ngô Văn Đường", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
+                    { id: "8", pid: "3", name: "Ngô Văn Xuyến", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
+                    { id: "deng3", pid: "3", name: "Ngô Thị Đeng", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
+                    { id: "dao3", pid: "3", name: "Ngô Văn Đào", title: "Đời 3", img: imgNgo, gender: "nam", tags: ["doi-3"] },
+                    { id: "quy3", pid: "3", name: "Ngô Thị Quý", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
+                    { id: "mao3", pid: "3", name: "Ngô Thị Mão", title: "Đời 3", img: imgNgo, gender: "nu", tags: ["doi-3"] },
+                    { id: "9", pid: "4", name: "Ngô Văn Tâm", title: "Đời 4 (Hà Văn Tâm)", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "tham4_hao", pid: "5", name: "Ngô Thị Thầm", title: "Đời 4 (Hà Thị Thầm)", img: imgNgo, gender: "nu", tags: ["doi-4"] },
+                    { id: "yen4", pid: "6", name: "Ngô Thị Yên", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
+                    { id: "tien4", pid: "6", name: "Ngô Thị Tiến", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
+                    { id: "10", pid: "6", name: "Ngô Vĩnh Thắng", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "giang4", pid: "6", name: "Ngô Văn Giảng", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "nau4", pid: "6", name: "Ngô Thị Nậu", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
+                    { id: "11", pid: "6", name: "Ngô Xuân Đối", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "bao4", pid: "7", name: "Ngô Thị Bảo", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
+                    { id: "12", pid: "7", name: "Ngô Văn Thầm", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "thi4", pid: "7", name: "Ngô Văn Thì", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "13", pid: "7", name: "Ngô Hồng Kinh", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "14", pid: "7", name: "Ngô Xuân Khoa", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "vang4", pid: "8", name: "Ngô Thị Vàng", title: "Đời 4", img: imgNgo, gender: "nu", tags: ["doi-4"] },
+                    { id: "15", pid: "8", name: "Ngô Thế Hiệp", title: "Đời 4", img: imgNgo, gender: "nam", tags: ["doi-4"] },
+                    { id: "linh5", pid: "9", name: "Hà Văn Lịnh", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "16", pid: "10", name: "Ngô Thế Tạ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "to5", pid: "10", name: "Ngô Thị Tô", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "chieu5", pid: "10", name: "Ngô Thị Chiêu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "lam5", pid: "10", name: "Ngô Thị Lâm", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "17", pid: "10", name: "Ngô Văn Phòng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "18", pid: "10", name: "Ngô Hồng Vân", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "19", pid: "10", name: "Ngô Văn Vệ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "cuu5", pid: "10", name: "Ngô Thị Cửu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "thap5", pid: "10", name: "Ngô Thị Thập", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "20", pid: "10", name: "Ngô Thế Nêm", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "nhi5", pid: "10", name: "Ngô Thị Nhị", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "21", pid: "10", name: "Ngô Văn Ngoan", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "22", pid: "11", name: "Ngô Văn Thưởng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "tam5_doi", pid: "11", name: "Ngô Thị Tâm", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "hien5_doi", pid: "11", name: "Ngô Thị Hiền", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "hau5_doi", pid: "11", name: "Ngô Thị Hậu", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "cuong5_doi", pid: "11", name: "Ngô Thị Cương", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "my5_doi", pid: "11", name: "Ngô Thị Mỵ", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "diem5", pid: "11", name: "Ngô Thế Diệm", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "chuong5", pid: "12", name: "Ngô Thị Chương", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "23", pid: "12", name: "Ngô Văn Dung", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "24", pid: "12", name: "Ngô Văn Chiến", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "nga5", pid: "12", name: "Ngô Thị Nga", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "25", pid: "12", name: "Ngô Hồng Văn", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "tuc5", pid: "13", name: "Ngô Thị Túc", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "26", pid: "13", name: "Ngô Văn Chính", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "minh5_kinh", pid: "13", name: "Ngô Thị Mình", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "hoa5", pid: "13", name: "Ngô Thị Hoa", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "27", pid: "13", name: "Ngô Văn Đa", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "nhanh5", pid: "13", name: "Ngô Thị Nhanh", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "hop5", pid: "13", name: "Ngô Thị Hợp", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "28", pid: "14", name: "Ngô Văn Hùng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "29", pid: "14", name: "Ngô Xuân Lượng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "luc5", pid: "14", name: "Ngô Thị Lục", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "chieu5_khoa", pid: "14", name: "Ngô Thị Chiều", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "khan5", pid: "14", name: "Ngô Thị Khăn", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "30", pid: "14", name: "Ngô Văn Dứa", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "31", pid: "14", name: "Ngô Văn Huỳnh", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "32", pid: "14", name: "Ngô Văn Lỵ", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "nhai5", pid: "14", name: "Ngô Thị Nhài", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "chung5", pid: "15", name: "Ngô Thị Chúng", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "33", pid: "15", name: "Ngô Thế Nhật", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "34", pid: "15", name: "Ngô Thế Tùng", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "bach5", pid: "15", name: "Ngô Thị Bạch", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "hang5", pid: "15", name: "Ngô Thị Hằng", title: "Đời 5", img: imgNgo, gender: "nu", tags: ["doi-5"] },
+                    { id: "35", pid: "15", name: "Ngô Thế Du", title: "Đời 5", img: imgNgo, gender: "nam", tags: ["doi-5"] },
+                    { id: "36", pid: "16", name: "Ngô Thế Nghiệp", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "hoai6", pid: "16", name: "Ngô Thị Hoài", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "thieu6", pid: "16", name: "Ngô Thị Thiêu", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "37", pid: "17", name: "Ngô Hồng Thái", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "thanh6", pid: "17", name: "Ngô Kim Thanh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "38", pid: "18", name: "Ngô Quyền", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "tuananh6", pid: "18", name: "Ngô Tuấn Anh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "thuy6", pid: "19", name: "Ngô Xuân Thụy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "quynh6", pid: "19", name: "Ngô Hương Quỳnh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "khanh6", pid: "20", name: "Ngô Quốc Khánh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "duy6_nem", pid: "20", name: "Ngô Thế Duy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "tu6", pid: "21", name: "Ngô Anh Tú", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "tra6", pid: "21", name: "Ngô Hương Trà", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "thuc6", pid: "22", name: "Ngô Văn Thức", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "linh6", pid: "22", name: "Ngô Thị Linh", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "ha6", pid: "23", name: "Ngô Thị Hà", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "hien6_dung", pid: "23", name: "Ngô Thị Hiền", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "hung6_dung", pid: "23", name: "Ngô Thế Hưng", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "huyen6", pid: "24", name: "Ngô Thanh Huyền", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "hang6_chien", pid: "24", name: "Ngô Thanh Hằng", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "toan6", pid: "25", name: "Ngô Thế Toán", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "39", pid: "25", name: "Ngô Kỳ Anh", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "nguyet6", pid: "26", name: "Ngô Thị Nguyệt", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "40", pid: "26", name: "Ngô Văn Quang", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "41", pid: "27", name: "Ngô Thế Liêm", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "thu6", pid: "27", name: "Ngô Anh Thư", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "ngan6", pid: "27", name: "Ngô Kim Ngân", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "trang6", pid: "28", name: "Ngô Thị Trang", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "duy6_hung", pid: "28", name: "Ngô Mạnh Duy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "42", pid: "29", name: "Ngô Xuân Nguyên", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "ngoc6", pid: "29", name: "Ngô Tiến Ngọc", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "giang6", pid: "30", name: "Ngô Hương Giang", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "que6", pid: "30", name: "Ngô Hương Quế", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "quan6", pid: "31", name: "Ngô Hồng Quân", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "hien6_huynh", pid: "31", name: "Ngô Hồng Hiển", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "tran6", pid: "32", name: "Ngô Bảo Trân", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "chi6", pid: "32", name: "Ngô Diệp Chi", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "huy6", pid: "33", name: "Ngô Quang Huy", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "nguyen6_nhat", pid: "33", name: "Ngô Trấn Nguyên", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "anh6_tung", name: "Ngô Hồng Ánh", pid: "34", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "ngoc6_tung", name: "Ngô Thị Hồng Ngọc", pid: "34", title: "Đời 6", img: imgNgo, gender: "nu", tags: ["doi-6"] },
+                    { id: "ducanh6", name: "Ngô Đức Anh", pid: "34", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "kiet6", name: "Ngô Thế Kiệt", pid: "35", title: "Đời 6", img: imgNgo, gender: "nam", tags: ["doi-6"] },
+                    { id: "43", pid: "36", name: "Ngô Hương Dịu", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
+                    { id: "44", pid: "36", name: "Ngô Linh Chi", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
+                    { id: "45", pid: "37", name: "Ngô Yến Vy", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
+                    { id: "my7_thai", pid: "37", name: "Ngô Huyền My", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
+                    { id: "46", pid: "38", name: "Ngô Quốc Huy", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
+                    { id: "47", pid: "39", name: "Ngô Minh Khôi", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
+                    { id: "48", pid: "40", name: "Ngô Đan Lê", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
+                    { id: "49", pid: "41", name: "Ngô Diệu My", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] },
+                    { id: "50", pid: "42", name: "Ngô Gia Vỹ", title: "Đời 7", img: imgNgo, gender: "nam", tags: ["doi-7"] },
+                    { id: "han7", pid: "42", name: "Ngô Gia Hân", title: "Đời 7", img: imgNgo, gender: "nu", tags: ["doi-7"] }
+                ];
+                
+                // Đồng bộ mảng này lên thẳng Firebase
+                danhSachGoc.forEach(member => {
+                    db.child(member.id).set(member);
+                });
+            }
+
+            // Vẽ cây và cập nhật danh sách cha
+            hienThiLaiCay();
+        });
+
+        // HÀM HIỂN THỊ CÂY VÀ THAY ĐỔI Ô CHỌN CHA
+        function hienThiLaiCay() {
             chart.load(giaPha);
+            
             var sel = document.getElementById("parentSelect");
-            sel.innerHTML = "";
-            [...giaPha].sort((a,b)=>a.name.localeCompare(b.name)).forEach(p=>{
+            sel.innerHTML = '<option value="">-- Chọn Cha / Mẹ --</option>';
+            
+            // Sắp xếp danh sách theo tên Alphabe để dễ tìm kiếm
+            [...giaPha].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
                 var opt = document.createElement("option");
-                opt.value = p.id; opt.text = p.name + " (" + (p.title || "") + ")"; sel.appendChild(opt);
+                opt.value = p.id; 
+                opt.text = p.name + " (" + (p.title || "") + ")"; 
+                sel.appendChild(opt);
             });
         }
 
+        // THÊM NGƯỜI MỚI TRỰC TIẾP LÊN ĐÁM MÂY FIREBASE
         function themNguoi() {
             var name = document.getElementById("newName").value.trim();
             var title = document.getElementById("newTitle").value.trim();
@@ -342,12 +386,26 @@
             else if(title.includes("5")) tagDoi = "doi-5";
             else if(title.includes("6")) tagDoi = "doi-6";
             
-            giaPha.push({ id: Date.now().toString(), pid: pid, name: name, title: title, img: img, gender: gender, tags: [tagDoi] });
-            reload();
+            var uniqueId = Date.now().toString(); // Tạo ID ngẫu nhiên không trùng
+
+            // Đẩy bản ghi mới lên Firebase
+            db.child(uniqueId).set({
+                id: uniqueId,
+                pid: pid || null,
+                name: name,
+                title: title,
+                img: img,
+                gender: gender,
+                tags: [tagDoi]
+            });
+
+            // Reset Form nhập liệu
             document.getElementById("newName").value = "";
             document.getElementById("newTitle").value = "";
+            document.getElementById("photoBase64").value = "";
+            
             if(window.innerWidth <= 768) toggleMobile();
-            alert("Đã cập nhật thành công thành viên mới!");
+            alert("Đã cập nhật thành công thành viên mới lên hệ thống đám mây!");
         }
 
         function xuLyAnh(f) {
@@ -358,7 +416,7 @@
 
         function toggleMobile() { document.getElementById("sidebarForm").classList.toggle("open"); }
 
-        // ĐIỀU CHỈNH THUẬT TOÁN CO GIÃN THÔNG MINH PHỤC VỤ RIÊNG CHO BẢN IN
+        // ĐIỀU CHỈNH LAYOUT IN ẤN
         function chuanBiIn(loaiIn) {
             if (loaiIn === 'chi_nam') {
                 var chiInNam = giaPha.filter(n => n.gender === "nam");
@@ -367,24 +425,17 @@
                 chart.load(giaPha);
             }
 
-            // Kích hoạt Layout dạng thu nhỏ thông minh trước khi quét file in
             chart.getLayout().compact = true;
-            
-            // Ép đồ thị tự tính toán tỷ lệ thu nhỏ để gom toàn bộ các đời vào đúng biên giấy
             chart.fit();
 
-            // Chờ cấu trúc đồ họa SVG dựng xong biên độ rộng mới kích hoạt lệnh của máy in
             setTimeout(() => { 
                 window.print(); 
-                
-                // Trả cây về trạng thái dàn trải bình thường sau khi hoàn tất lệnh in
                 chart.getLayout().compact = false;
-                reload(); 
+                hienThiLaiCay(); 
             }, 800);
         }
 
-        // Chạy khởi tạo dữ liệu và sinh mã QR
-        reload();
+        // Tự động khởi chạy mã QR
         taoMaQR();
     </script>
 </body>
