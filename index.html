@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản Lý Phả Hệ Dòng Họ Ngô</title>
     <style>
-        /* === CẤU HÌNH GIAO DIỆN CHÍNH (Giống ảnh mẫu) === */
+        /* === CẤU HÌNH GIAO DIỆN CHÍNH === */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f2ede4;
@@ -55,9 +55,16 @@
             background-color: #b30000;
         }
 
+        .btn-reset {
+            background-color: #555 !important;
+        }
+        .btn-reset:hover {
+            background-color: #333 !important;
+        }
+
         /* Khu vực hiển thị cây phả hệ */
         .tree-container {
-            margin-top: 100px;
+            margin-top: 120px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -65,7 +72,7 @@
             padding: 20px;
         }
 
-        /* === HỆ THỐNG CSS FLEX-TREE (Khắc phục triệt để lỗi chồng lấp) === */
+        /* === HỆ THỐNG CSS FLEX-TREE (Khắc phục triệt để lỗi chồng lấp hình tròn) === */
         .tree ul {
             padding-top: 30px; 
             position: relative;
@@ -84,7 +91,7 @@
             transition: all 0.5s;
         }
 
-        /* Tạo đường kẻ kết nối bằng Pseudo-elements */
+        /* Tạo đường kẻ kết nối bằng các nhánh */
         .tree li::before, .tree li::after {
             content: '';
             position: absolute; 
@@ -100,7 +107,7 @@
             border-left: 2px solid #b5b5b5;
         }
 
-        /* Loại bỏ đường kẻ thừa ở các node biên */
+        /* Loại bỏ các đường kẻ thừa tự động */
         .tree li:only-child::after, .tree li:only-child::before {
             display: none;
         }
@@ -129,12 +136,12 @@
             height: 30px;
         }
 
-        /* === THIẾT KẾ NODE HÌNH TRÒN (Đúng chuẩn yêu cầu) === */
+        /* === THIẾT KẾ NODE HÌNH TRÒN CHUẨN === */
         .node-card {
             width: 150px;
             height: 150px;
-            background-color: #7a0000; /* Màu đỏ đô chuẩn */
-            border: 4px solid #ffcc00; /* Viền vàng chuẩn */
+            background-color: #7a0000; /* Màu đỏ đô */
+            border: 4px solid #ffcc00; /* Viền vàng */
             border-radius: 50%;
             display: inline-flex;
             flex-direction: column;
@@ -148,9 +155,9 @@
             padding: 10px;
         }
 
-        /* Nội dung text bên trong Node */
+        /* Nội dung hiển thị bên trong hình tròn */
         .node-generation {
-            color: #00a2ff; /* Màu xanh đời hiển thị */
+            color: #00a2ff; /* Màu xanh đời */
             font-size: 12px;
             font-weight: bold;
             margin-bottom: 5px;
@@ -164,26 +171,27 @@
             max-width: 120px;
         }
 
-        /* Nút thêm con tương tác nhanh */
+        /* Nút thêm con dấu cộng (+) */
         .add-btn {
             position: absolute;
             bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             background-color: #ff8800;
             border: 2px solid #fff;
             border-radius: 50%;
             color: white;
             font-weight: bold;
             font-size: 16px;
-            line-height: 20px;
+            line-height: 22px;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 10;
         }
 
         .add-btn:hover {
@@ -194,8 +202,8 @@
         /* Hiệu ứng khi tìm kiếm trúng đích */
         .node-card.highlight {
             border-color: #00ff2b !important;
-            box-shadow: 0 0 25px #00ff2b;
-            transform: scale(1.1);
+            box-shadow: 0 0 30px #00ff2b;
+            transform: scale(1.15);
         }
     </style>
 </head>
@@ -204,6 +212,7 @@
     <div class="control-panel">
         <input type="text" id="searchInput" placeholder="Nhập tên thành viên cần tìm...">
         <button onclick="searchMember()">Tìm kiếm</button>
+        <button class="btn-reset" onclick="resetToDefault()" title="Xóa hết dữ liệu làm lại từ đầu nếu muốn">Đặt lại cây gốc</button>
     </div>
 
     <div class="tree-container">
@@ -211,15 +220,15 @@
     </div>
 
     <script>
-        // 1. DỮ LIỆU GỐC (Quản lý tập trung bằng JSON Object)
-        let familyData = {
-            id: "root_1",
+        // 1. DỮ LIỆU GỐC CỐ ĐỊNH (Dùng khi chạy lần đầu tiên)
+        const defaultData = {
+            id: "root_ngo_tai_nhan",
             name: "Ngô Tài Nhân",
             generation: 1,
             title: "Sản Tài Nhằn",
             children: [
                 {
-                    id: "member_2",
+                    id: "member_ngo_van_ly",
                     name: "Ngô Văn Lỵ",
                     generation: 2,
                     title: "",
@@ -228,20 +237,46 @@
             ]
         };
 
-        // 2. HÀM DỰNG GIAO DIỆN (Render cây tự động từ JSON)
+        // Biến lưu trữ động hoạt động trong hệ thống
+        let familyData = {};
+
+        // 2. HÀM QUẢN LÝ BỘ NHỚ TRÌNH DUYỆT (CHỐNG MẤT DỮ LIỆU)
+        function loadData() {
+            const savedData = localStorage.getItem('NGO_FAMILY_TREE_DATA');
+            if (savedData) {
+                familyData = JSON.parse(savedData);
+            } else {
+                familyData = JSON.parse(JSON.stringify(defaultData));
+                saveData();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('NGO_FAMILY_TREE_DATA', JSON.stringify(familyData));
+        }
+
+        function resetToDefault() {
+            if (confirm("Bạn có chắc chắn muốn xóa hết các nhánh con đã thêm để quay về cây gốc (Cụ Ngô Tài Nhân & Ngô Văn Lỵ)?")) {
+                localStorage.removeItem('NGO_FAMILY_TREE_DATA');
+                loadData();
+                initTree();
+            }
+        }
+
+        // 3. HÀM DỰNG GIAO DIỆN TỰ ĐỘNG (Render thuần Flexbox, loại bỏ hoàn toàn việc đè ô)
         function renderTree(node) {
             let html = `<li>`;
             
-            // Render khung hình tròn của từng cá nhân
+            // Vẽ nút tròn cho cá nhân
             html += `
                 <div class="node-card" id="card-${node.id}">
                     <div class="node-generation">Đời ${node.generation} ${node.title ? '(' + node.title + ')' : ''}</div>
                     <div class="node-name">${node.name}</div>
-                    <button class="add-btn" onclick="promptAddChild('${node.id}')" title="Thêm con">+</button>
+                    <button class="add-btn" onclick="promptAddChild('${node.id}')" title="Thêm con cho ${node.name}">+</button>
                 </div>
             `;
             
-            // Nếu có con, tiếp tục đệ quy dựng thẻ con sâu xuống dưới
+            // Nếu có nhánh con, đệ quy tạo danh sách con lồng nhau
             if (node.children && node.children.length > 0) {
                 html += `<ul>`;
                 node.children.forEach(child => {
@@ -254,23 +289,22 @@
             return html;
         }
 
-        // Hàm chính để load cây lên màn hình
+        // Đẩy cây lên giao diện màn hình
         function initTree() {
             const container = document.getElementById('treeLayout');
             container.innerHTML = `<ul>${renderTree(familyData)}</ul>`;
         }
 
-        // 3. XỬ LÝ CHỨC NĂNG: THÊM CON (Khắc phục lỗi nút Ngô Văn Lỵ)
-        // Hàm đệ quy tìm kiếm chính xác ID của cha trong cây để nhét con vào
+        // 4. KHẮC PHỤC LỖI THÊM CON (Hàm tìm kiếm ID đệ quy sâu)
         function findAndAddChild(currentNode, parentId, newChildName) {
             if (currentNode.id === parentId) {
                 if (!currentNode.children) currentNode.children = [];
                 
-                // Khởi tạo Object con mới
+                // Tạo cấu trúc dữ liệu con mới
                 let newChild = {
-                    id: "member_" + Date.now(), // Đảm bảo ID duy nhất không trùng lặp
+                    id: "member_" + Date.now() + "_" + Math.floor(Math.random() * 1000), // Đảm bảo ID độc nhất 100%
                     name: newChildName,
-                    generation: currentNode.generation + 1,
+                    generation: parseInt(currentNode.generation) + 1,
                     title: "",
                     children: []
                 };
@@ -288,22 +322,23 @@
             return false;
         }
 
-        // Kích hoạt hộp thoại khi ấn nút "+" ở dưới mỗi node
+        // Xử lý sự kiện khi ấn nút dấu cộng (+) dưới mỗi ô
         function promptAddChild(parentId) {
             let childName = prompt("Nhập tên người con cần thêm:");
             if (childName && childName.trim() !== "") {
                 let success = findAndAddChild(familyData, parentId, childName.trim());
                 if (success) {
-                    initTree(); // Ép cây render lại giao diện mới tức thì
+                    saveData(); // Ghi ngay lập tức vào bộ nhớ máy tính
+                    initTree(); // Vẽ lại giao diện mới tức thì
                 } else {
-                    alert("Có lỗi xảy ra, không tìm thấy mục dữ liệu!");
+                    alert("Không tìm thấy mục dữ liệu của người cha!");
                 }
             }
         }
 
-        // 4. XỬ LÝ CHỨC NĂNG: THANH TÌM KIẾM (Hoạt động hoàn hảo)
+        // 5. KHẮC PHỤC LỖI THANH TÌM KIẾM CỦA PHẢ HỆ
         function searchMember() {
-            // Xóa tất cả các highlight cũ trước đó
+            // Loại bỏ các viền sáng (highlight) cũ
             document.querySelectorAll('.node-card').forEach(card => {
                 card.classList.remove('highlight');
             });
@@ -314,31 +349,32 @@
             let allNodes = document.querySelectorAll('.node-card');
             let foundCard = null;
 
-            // Quét qua các node DOM tìm kiếm chuỗi ký tự khớp tên
+            // Quét qua toàn bộ DOM cây để đối chiếu chuỗi ký tự tên tộc
             allNodes.forEach(card => {
                 let nameText = card.querySelector('.node-name').textContent.toLowerCase();
                 if (nameText.includes(keyword)) {
                     card.classList.add('highlight');
-                    if (!foundCard) foundCard = card; // Lưu lại phần tử đầu tiên khớp để focus
+                    if (!foundCard) foundCard = card; // Giữ lại phần tử đầu tiên tìm thấy để cuộn màn hình
                 }
             });
 
-            // Nếu tìm thấy, tự động di chuyển màn hình mượt mà (Scroll) đến vị trí người đó
+            // Nếu khớp tên, tự động trượt khung hình (Scroll) đưa người đó vào chính giữa màn hình
             if (foundCard) {
                 foundCard.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
             } else {
-                alert("Không tìm thấy thành viên có tên này trong phả hệ!");
+                alert("Không tìm thấy thành viên mang tên này trong hệ thống phả hệ!");
             }
         }
 
-        // Cho phép ấn phím Enter trên thanh tìm kiếm để tra cứu nhanh
+        // Bật tính năng nhấn nút Enter để tìm kiếm nhanh
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchMember();
             }
         });
 
-        // Khởi chạy hệ thống lần đầu khi mở trang
+        // HỆ THỐNG KHỞI CHẠY LẦN ĐẦU
+        loadData();
         initTree();
     </script>
 </body>
