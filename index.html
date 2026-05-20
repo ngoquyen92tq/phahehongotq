@@ -42,9 +42,9 @@
         .page-section { display: none; width: 100%; height: 100%; position: relative; }
         .page-section.active { display: flex; }
 
-        /* ĐÃ CHUYỂN THÀNH CỬA SỔ NỔI POP-UP ĐẢM BẢO THẨM MỸ */
+        /* CỬA SỔ NỔI POP-UP NHẬP LIỆU */
         .sidebar-form {
-            display: none; /* Ẩn mặc định, chỉ hiện khi nhấn nút hoặc chọn thành viên */
+            display: none; 
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
@@ -70,7 +70,7 @@
         }
         .btn-submit:hover { background-color: #9c2424; color: #fff; }
 
-        /* THANH ĐIỀU KHIỂN PHÓNG TO, THU NHỎ, THÊM THÀNH VIÊN LINH HOẠT */
+        /* THANH ĐIỀU KHIỂN ZOOM VÀ THÊM THÀNH VIÊN */
         .tree-toolbar {
             position: absolute; top: 15px; left: 15px; z-index: 99; display: flex; gap: 6px;
         }
@@ -185,6 +185,7 @@
                 </div>
 
                 <div class="form-group"><label>Thế hệ / Ghi chú:</label><input type="text" id="newTitle" placeholder="Ví dụ: Đời 8..."></div>
+                <div class="form-group"><label>Thứ tự hiển thị (Số nhỏ đứng trước):</label><input type="number" id="newOrder" value="0" placeholder="Ví dụ: 1, 2, 3..."></div>
                 <div class="form-group"><label>Ảnh chân dung:</label><input type="file" accept="image/*" onchange="xuLyAnh(this)"><input type="hidden" id="photoBase64"></div>
                 
                 <div class="form-group">
@@ -259,7 +260,6 @@
     <script>
         var imgNgo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23de5d5d' stroke='%23f7d070' stroke-width='2'/%3E%3Ctext x='50' y='64' font-family='serif' font-size='50' font-weight='bold' fill='%23fce79d' text-anchor='middle'%3E吳%3C/text%3E%3C/svg%3E";
 
-        // TÍNH HỢP SẴN KHU VỰC DATABASE ĐƯỜNG TRUYỀN CỦA BẠN
         var firebaseConfig = {
             apiKey: "AIzaSyAs-V0b3v6I3xAnD3Z-n1zO87T3vHnF44",
             authDomain: "phahehongo.firebaseapp.com",
@@ -283,7 +283,7 @@
             nodeBinding: { field_0: "name", field_1: "title", img_0: "img" },
             siblingSpacing: 15, 
             levelSpacing: 40,   
-            searchFields: [], // Vô hiệu hóa tính năng tìm kiếm lỗi của OrgChart
+            searchFields: [], 
             tags: {
                 "doi-1": { node: { width: 320, height: 120 } },
                 "doi-2": { node: { width: 260, height: 95 } },
@@ -295,7 +295,6 @@
             }
         });
 
-        // SỰ KIỆN NHẤN VÀO THÀNH VIÊN ĐỂ SỬA - SẼ HIỆN POP-UP NỔI GIỮA MÀN HÌNH
         chart.on('click', function(sender, args) {
             var memberId = args.node.id;
             var memberData = giaPha.find(n => n.id === memberId);
@@ -303,6 +302,7 @@
                 document.getElementById("editMemberId").value = memberData.id;
                 document.getElementById("newName").value = memberData.name;
                 document.getElementById("newTitle").value = memberData.title || "";
+                document.getElementById("newOrder").value = memberData.order || 0;
                 
                 if (memberData.gender === "nu") {
                     document.querySelector('input[name="newGender"][value="nu"]').checked = true;
@@ -325,6 +325,7 @@
             document.getElementById("editMemberId").value = "";
             document.getElementById("newName").value = "";
             document.getElementById("newTitle").value = "";
+            document.getElementById("newOrder").value = "0";
             document.getElementById("photoBase64").value = "";
             document.getElementById("searchParentInput").value = "";
             document.getElementById("parentSelect").value = "";
@@ -352,15 +353,38 @@
         db.on('value', function(snapshot) {
             var data = snapshot.val();
             if (data) {
-                giaPha = Object.keys(data).map(key => ({
+                // Đọc toàn bộ danh sách
+                var tamGiaPha = Object.keys(data).map(key => ({
                     id: key,
                     pid: data[key].pid || undefined,
                     name: data[key].name,
                     title: data[key].title,
                     img: data[key].img,
                     gender: data[key].gender,
-                    tags: data[key].tags
+                    tags: data[key].tags,
+                    order: parseInt(data[key].order || 0)
                 }));
+
+                // ĐIỀU CHỈNH ĐẶC BIỆT THEO YÊU CẦU: Tìm và ép vị trí cho cụ Ngô Hồng Vân
+                var ongThang = tamGiaPha.find(n => n.name.trim() === "Ngô Vĩnh Thắng");
+                var ongVan = tamGiaPha.find(n => n.name.trim() === "Ngô Hồng Vân");
+                var ongPhong = tamGiaPha.find(n => n.name.trim() === "Ngô Văn Phòng");
+                var ongVe = tamGiaPha.find(n => n.name.trim() === "Ngô Văn Vệ");
+
+                if (ongThang && ongVan) {
+                    // 1. Ép cụ Vân làm con cụ Thắng
+                    ongVan.pid = ongThang.id;
+                    
+                    // 2. Gán số thứ tự cố định để ép vị trí (Phòng = 1 -> Vân = 2 -> Vệ = 3)
+                    if (ongPhong) ongPhong.order = 1;
+                    ongVan.order = 2;
+                    if (ongVe) ongVe.order = 3;
+                }
+
+                // Sắp xếp lại toàn bộ mảng theo thuộc tính "order" (Số nhỏ đứng trước)
+                tamGiaPha.sort((a, b) => a.order - b.order);
+                giaPha = tamGiaPha;
+
             } else {
                 giaPha = [];
             }
@@ -423,18 +447,17 @@
             event.target.classList.add('active');
         }
 
-        // HÀM LƯU THÀNH VIÊN ĐÃ ĐƯỢC THIẾT LẬP RÀNG BUỘC CỨNG CHẶN TÁCH NHÁNH
         function luuThanhVien() {
             var id = document.getElementById("editMemberId").value;
             var name = document.getElementById("newName").value.trim();
             var title = document.getElementById("newTitle").value.trim();
+            var order = parseInt(document.getElementById("newOrder").value || 0);
             var pid = document.getElementById("parentSelect").value;
             var gender = document.querySelector('input[name="newGender"]:checked').value;
             var img = document.getElementById("photoBase64").value;
             
             if(!name) return alert("Vui lòng nhập họ tên!");
 
-            // BẮT BUỘC PHẢI CHỌN CHA, KHÔNG CHO PHÉP ĐỂ TRỐNG (TRÁNH LỖI ĐẺ NHÁNH)
             if (!pid && giaPha.length > 0) {
                 alert("LỖI CẤU TRÚC: Bạn chưa chọn tên Cha! Hệ thống yêu cầu bắt buộc phải tìm và chọn tên Cha từ danh sách để liên kết đúng vào nhánh dòng họ.");
                 return;
@@ -448,21 +471,33 @@
             else if(title.includes("5")) tagDoi = "doi-5";
             else if(title.includes("6")) tagDoi = "doi-6";
             
+            var duLieuLuu = {
+                pid: pid || null,
+                name: name,
+                title: title,
+                order: order,
+                gender: gender,
+                tags: [tagDoi]
+            };
+
+            // Nếu đổi thủ công tên Ngô Hồng Vân ở đây, hệ thống vẫn ưu tiên đồng bộ lên Firebase đúng dữ liệu nhập
+            var ongThang = giaPha.find(n => n.name.trim() === "Ngô Vĩnh Thắng");
+            if (name === "Ngô Hồng Vân" && ongThang && !pid) {
+                duLieuLuu.pid = ongThang.id;
+                duLieuLuu.order = 2;
+            }
+            if (name === "Ngô Văn Phòng" && !order) duLieuLuu.order = 1;
+            if (name === "Ngô Văn Vệ" && !order) duLieuLuu.order = 3;
+
             if (id) {
                 if (!img) {
                     var nguoiCu = giaPha.find(n => n.id === id);
                     img = nguoiCu ? nguoiCu.img : imgNgo;
                 }
+                duLieuLuu.id = id;
+                duLieuLuu.img = img;
                 
-                db.child(id).set({
-                    id: id,
-                    pid: pid || null,
-                    name: name,
-                    title: title,
-                    img: img,
-                    gender: gender,
-                    tags: [tagDoi]
-                }, function(error) {
+                db.child(id).set(duLieuLuu, function(error) {
                     if(!error) {
                         alert("Đã cập nhật thông tin thành công!");
                         dongModalForm();
@@ -472,16 +507,10 @@
             } else {
                 if (!img) img = imgNgo;
                 var uniqueId = Date.now().toString();
+                duLieuLuu.id = uniqueId;
+                duLieuLuu.img = img;
 
-                db.child(uniqueId).set({
-                    id: uniqueId,
-                    pid: pid || null,
-                    name: name,
-                    title: title,
-                    img: img,
-                    gender: gender,
-                    tags: [tagDoi]
-                }, function(error) {
+                db.child(uniqueId).set(duLieuLuu, function(error) {
                     if(!error) {
                         alert("Đã thêm thành viên mới thành công!");
                         dongModalForm();
