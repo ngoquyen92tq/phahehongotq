@@ -10,7 +10,7 @@
             font-family: "Segoe UI", Arial, sans-serif; background: #fdf5e6; 
         }
 
-        /* TIÊU ĐỀ HOÀNH PHI - GỌI FILE ẢNH HOANHPHI.PNG */
+        /* TIÊU ĐỀ HOÀNH PHI */
         .header-clan { 
             display: flex; align-items: center; justify-content: space-between;
             background: #781c1c url('hoanhphi.png') no-repeat center center;
@@ -24,7 +24,7 @@
             z-index: 5;
         }
         
-        /* THANH MENU NGANG THƯỢNG ĐỈNH */
+        /* THANH MENU NGANG */
         .nav-menu-bar {
             background-color: #781c1c; height: 45px; display: flex; justify-content: center;
             align-items: center; border-bottom: 3px solid #8c6d31; box-shadow: 0 3px 6px rgba(0,0,0,0.2); z-index: 11; position: relative;
@@ -37,12 +37,12 @@
         .nav-item:first-child { border-left: 1px solid rgba(247, 208, 112, 0.2); }
         .nav-item:hover, .nav-item.active { background-color: #9c2424; color: #ffffff; }
 
-        /* KHUNG CHỨA NỘI DUNG CHÍNH CHUYỂN ĐỔI THEO MENU */
+        /* KHUNG CHỨA NỘI DUNG CHÍNH */
         .main-container { display: flex; width: 100%; height: calc(100% - 155px); position: relative; }
         .page-section { display: none; width: 100%; height: 100%; position: relative; }
         .page-section.active { display: flex; }
 
-        /* CỬA SỔ NỔI POP-UP NHẬP LIỆU */
+        /* CỬA SỔ POP-UP NHẬP LIỆU */
         .sidebar-form {
             display: none; 
             position: fixed;
@@ -70,13 +70,18 @@
         }
         .btn-submit:hover { background-color: #9c2424; color: #fff; }
 
-        /* THANH ĐIỀU KHIỂN ZOOM VÀ THÊM THÀNH VIÊN */
-        .tree-toolbar {
-            position: absolute; top: 15px; left: 15px; z-index: 99; display: flex; gap: 6px;
+        /* NÚT THÊM MỚI (VẪN ĐỂ Ở TRÊN CHO DỄ THẤY) */
+        .tree-toolbar-top {
+            position: absolute; top: 15px; left: 15px; z-index: 99;
+        }
+
+        /* THANH ĐIỀU KHIỂN PHÓNG TO, THU NHỎ, XEM TOÀN MÀN HÌNH CHUYỂN XUỐNG GÓC DƯỚI BÊN PHẢI */
+        .tree-toolbar-bottom-right {
+            position: absolute; bottom: 15px; right: 15px; z-index: 99; display: flex; gap: 6px;
         }
         .btn-tool {
             background: #781c1c; color: #f7d070; border: 1px solid #ffcc00; padding: 8px 14px;
-            font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s;
+            font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .btn-tool:hover { background: #9c2424; color: #fff; }
@@ -87,7 +92,7 @@
             background-image: url('https://www.transparenttextures.com/patterns/gold-canvas.png');
         }
 
-        /* GIAO DIỆN CÁC TRANG BÀI VIẾT NẰM RIÊNG BIỆT */
+        /* GIAO DIỆN BÀI VIẾT KHÁC */
         .article-page-layout { width: 100%; height: 100%; padding: 30px; box-sizing: border-box; background: #fffdf4; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .article-card { max-width: 900px; margin: 0 auto; width: 100%; background: #ffffff; padding: 30px; border: 1px solid #8c6d31; border-radius: 12px; box-shadow: 0 4px 15px rgba(92,64,51,0.1); }
         .article-card h2 { color: #781c1c; font-size: 22px; border-bottom: 2px solid #781c1c; padding-bottom: 10px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
@@ -96,7 +101,15 @@
         /* ẨN TOÀN BỘ THANH TÌM KIẾM MẶC ĐỊNH BỊ LỖI CỦA KHUNG PHẢ HỆ */
         .boc-search, .boc-search input, .boc-search svg { display: none !important; }
 
-        .clan-footer-credit { position: absolute; bottom: 8px; right: 15px; background: rgba(255, 253, 249, 0.9); padding: 5px 12px; border-radius: 20px; border: 1px solid #8c6d31; font-size: 11px; color: #5c4033; font-weight: bold; z-index: 999; }
+        /* DÒNG CHỮ HỘI ĐỒNG HỌ NGÔ CHUYỂN SANG GÓC DƯỚI BÊN TRÁI */
+        .clan-footer-credit { 
+            position: absolute; bottom: 15px; left: 15px; 
+            background: rgba(120, 28, 28, 0.95); padding: 8px 16px; 
+            border-radius: 6px; border: 1px solid #ffcc00; font-size: 12px; 
+            color: #ffcc00; font-weight: bold; z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
         .print-qr-footer { display: none; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); text-align: center; background: #fff; padding: 10px 20px; border: 2px dashed #781c1c; border-radius: 10px; align-items: center; justify-content: center; gap: 15px; z-index: 9999; }
         .print-qr-footer img { width: 75px; height: 75px; }
 
@@ -129,10 +142,11 @@
             .nav-item { padding: 5px 10px; font-size: 11px; border: none; }
             .main-container { height: calc(100% - 165px); }
             .sidebar-form { width: 90%; max-height: 80vh; }
+            .clan-footer-credit { bottom: 60px; left: 15px; }
         }
 
         @media print {
-            .sidebar-form, .header-clan, .nav-menu-bar, .clan-footer-credit, .tree-toolbar { display: none !important; }
+            .sidebar-form, .header-clan, .nav-menu-bar, .clan-footer-credit, .tree-toolbar-top, .tree-toolbar-bottom-right { display: none !important; }
             body, html, .main-container, #tree, .page-section { width: 100% !important; height: 100% !important; background: #ffffff !important; position: absolute !important; top: 0; left: 0; margin: 0; padding: 0; overflow: hidden; }
             #ph_he_section { display: flex !important; }
             .print-qr-footer { display: flex !important; }
@@ -162,11 +176,14 @@
     <div class="main-container">
         <div id="ph_he_section" class="page-section active">
             
-            <div class="tree-toolbar">
+            <div class="tree-toolbar-top">
                 <button class="btn-tool" onclick="moModalThemMoi()">➕ THÊM THÀNH VIÊN MỚI</button>
-                <button class="btn-tool" onclick="chart.zoom(1.2)">🔍 PHÓNG TO</button>
-                <button class="btn-tool" onclick="chart.zoom(0.8)">🔍 THU NHỎ</button>
-                <button class="btn-tool" onclick="chart.fit()">🔄 XEM TOÀN CẢNH</button>
+            </div>
+
+            <div class="tree-toolbar-bottom-right">
+                <button class="btn-tool" onclick="chart.zoom(1.2)">(+)</button>
+                <button class="btn-tool" onclick="chart.zoom(0.8)">(-)</button>
+                <button class="btn-tool" onclick="chart.fit()">XEM TOÀN MÀN HÌNH</button>
             </div>
 
             <div class="sidebar-form" id="sidebarForm">
@@ -353,7 +370,6 @@
         db.on('value', function(snapshot) {
             var data = snapshot.val();
             if (data) {
-                // Đọc toàn bộ danh sách
                 var tamGiaPha = Object.keys(data).map(key => ({
                     id: key,
                     pid: data[key].pid || undefined,
@@ -365,20 +381,26 @@
                     order: parseInt(data[key].order || 0)
                 }));
 
-                // ĐIỀU CHỈNH ĐẶC BIỆT THEO YÊU CẦU: Tìm và ép vị trí cho cụ Ngô Hồng Vân
-                var ongThang = tamGiaPha.find(n => n.name.trim() === "Ngô Vĩnh Thắng");
-                var ongVan = tamGiaPha.find(n => n.name.trim() === "Ngô Hồng Vân");
-                var ongPhong = tamGiaPha.find(n => n.name.trim() === "Ngô Văn Phòng");
-                var ongVe = tamGiaPha.find(n => n.name.trim() === "Ngô Văn Vệ");
+                // MẢNG THỨ TỰ 12 NGƯỜI CON CỦA CỤ NGÔ VĨNH THẮNG ĐÚNG THEO YÊU CẦU
+                var danhSachConOngThang = [
+                    "Ngô Thế Tạ", "Ngô Thị Tô", "Ngô Thị Chiêu", "Ngô Thị Lâm",
+                    "Ngô Văn Phòng", "Ngô Hồng Vân", "Ngô Văn Vệ", "Ngô Thị Cửu",
+                    "Ngô Thị Thập", "Ngô Thế Nêm", "Ngô Thị Nhị", "Ngô Văn Ngoan"
+                ];
 
-                if (ongThang && ongVan) {
-                    // 1. Ép cụ Vân làm con cụ Thắng
-                    ongVan.pid = ongThang.id;
-                    
-                    // 2. Gán số thứ tự cố định để ép vị trí (Phòng = 1 -> Vân = 2 -> Vệ = 3)
-                    if (ongPhong) ongPhong.order = 1;
-                    ongVan.order = 2;
-                    if (ongVe) ongVe.order = 3;
+                var ongThang = tamGiaPha.find(n => n.name.trim() === "Ngô Vĩnh Thắng");
+
+                if (ongThang) {
+                    tamGiaPha.forEach(member => {
+                        var tenXenTrim = member.name.trim();
+                        var viTriIndex = danhSachConOngThang.indexOf(tenXenTrim);
+                        
+                        // Nếu thuộc danh sách 12 người con này thì ép pid về cụ Thắng và gán số order tăng dần
+                        if (viTriIndex !== -1) {
+                            member.pid = ongThang.id;
+                            member.order = viTriIndex + 1; // Ngô Thế Tạ = 1, Ngô Thị Tô = 2... Ngô Văn Ngoan = 12
+                        }
+                    });
                 }
 
                 // Sắp xếp lại toàn bộ mảng theo thuộc tính "order" (Số nhỏ đứng trước)
@@ -480,14 +502,18 @@
                 tags: [tagDoi]
             };
 
-            // Nếu đổi thủ công tên Ngô Hồng Vân ở đây, hệ thống vẫn ưu tiên đồng bộ lên Firebase đúng dữ liệu nhập
+            // Đồng bộ dữ liệu cứng nếu người dùng thao tác lưu thủ công trên form
+            var danhSachConOngThang = [
+                "Ngô Thế Tạ", "Ngô Thị Tô", "Ngô Thị Chiêu", "Ngô Thị Lâm",
+                "Ngô Văn Phòng", "Ngô Hồng Vân", "Ngô Văn Vệ", "Ngô Thị Cửu",
+                "Ngô Thị Thập", "Ngô Thế Nêm", "Ngô Thị Nhị", "Ngô Văn Ngoan"
+            ];
             var ongThang = giaPha.find(n => n.name.trim() === "Ngô Vĩnh Thắng");
-            if (name === "Ngô Hồng Vân" && ongThang && !pid) {
+            var viTriIndex = danhSachConOngThang.indexOf(name);
+            if (viTriIndex !== -1 && ongThang) {
                 duLieuLuu.pid = ongThang.id;
-                duLieuLuu.order = 2;
+                duLieuLuu.order = viTriIndex + 1;
             }
-            if (name === "Ngô Văn Phòng" && !order) duLieuLuu.order = 1;
-            if (name === "Ngô Văn Vệ" && !order) duLieuLuu.order = 3;
 
             if (id) {
                 if (!img) {
