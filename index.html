@@ -10,7 +10,7 @@
             font-family: "Segoe UI", Arial, sans-serif; background: #fdf5e6; 
         }
 
-        /* TIÊU ĐỀ HOÀNH PHI - GỌI FILE ẢNH HOANHPHI.PNG ĐẶT TRONG CÙNG THƯ MỤC */
+        /* TIÊU ĐỀ HOÀNH PHI - GỌI FILE ẢNH HOANHPHI.PNG */
         .header-clan { 
             display: flex; align-items: center; justify-content: space-between;
             background: #781c1c url('hoanhphi.png') no-repeat center center;
@@ -42,13 +42,20 @@
         .page-section { display: none; width: 100%; height: 100%; position: relative; }
         .page-section.active { display: flex; }
 
-        /* KHUNG NHẬP LIỆU BÊN TRÁI CỦA MỤC PHẢ HỆ */
+        /* ĐÃ CHUYỂN THÀNH CỬA SỔ NỔI POP-UP ĐẢM BẢO THẨM MỸ */
         .sidebar-form {
-            width: 350px; background: #fffdf9; border-right: 4px double #781c1c;
-            padding: 15px; box-shadow: 5px 0 15px rgba(0,0,0,0.15); z-index: 10;
-            overflow-y: auto; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;
+            display: none; /* Ẩn mặc định, chỉ hiện khi nhấn nút hoặc chọn thành viên */
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px; max-height: 85vh;
+            background: #fffdf9; border: 3px double #781c1c;
+            padding: 20px; box-shadow: 0 0 30px rgba(0,0,0,0.6); z-index: 9999;
+            overflow-y: auto; box-sizing: border-box; flex-direction: column; gap: 8px;
+            border-radius: 10px;
         }
-        .sidebar-form h2 { font-size: 15px; color: #781c1c; border-bottom: 2px dashed #8c6d31; padding-bottom: 5px; text-align: center; margin: 0 0 5px 0; }
+        .sidebar-form.open { display: flex; }
+        .sidebar-form h2 { font-size: 16px; color: #781c1c; border-bottom: 2px dashed #8c6d31; padding-bottom: 5px; text-align: center; margin: 0 0 5px 0; }
         .form-group { margin-bottom: 6px; }
         .form-group label { display: block; font-size: 12px; font-weight: bold; color: #5c4033; margin-bottom: 3px; }
         .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #8c6d31; border-radius: 6px; font-size: 13px; box-sizing: border-box; }
@@ -63,6 +70,17 @@
         }
         .btn-submit:hover { background-color: #9c2424; color: #fff; }
 
+        /* THANH ĐIỀU KHIỂN PHÓNG TO, THU NHỎ, THÊM THÀNH VIÊN LINH HOẠT */
+        .tree-toolbar {
+            position: absolute; top: 15px; left: 15px; z-index: 99; display: flex; gap: 6px;
+        }
+        .btn-tool {
+            background: #781c1c; color: #f7d070; border: 1px solid #ffcc00; padding: 8px 14px;
+            font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-tool:hover { background: #9c2424; color: #fff; }
+
         /* KHÔNG GIAN ĐỒ HỌA CÂY PHẢ HỆ */
         #tree { 
             flex-grow: 1; height: 100%; position: relative; background-color: #f2e1c1;
@@ -75,22 +93,13 @@
         .article-card h2 { color: #781c1c; font-size: 22px; border-bottom: 2px solid #781c1c; padding-bottom: 10px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
         .article-card textarea { width: 100%; height: 350px; padding: 15px; border: 1px solid #8c6d31; border-radius: 8px; font-size: 15px; line-height: 1.6; font-family: inherit; box-sizing: border-box; resize: vertical; background: #fffcf7; color: #333; }
 
-        /* ÉP BIẾN Ô TÌM KIẾM TRÊN TRANG CHÍNH THÀNH KÍNH LÚP TRÒN SIÊU NHỎ */
-        .boc-search { 
-            top: 20px !important; right: 20px !important; left: auto !important; 
-            width: 36px !important; height: 36px !important; transition: width 0.3s ease-in-out; 
-            overflow: hidden; background: #ffffff !important; border-radius: 18px !important; 
-            border: 2px solid #ffcc00 !important; box-shadow: 0 3px 8px rgba(0,0,0,0.5) !important; 
-        }
-        .boc-search:hover, .boc-search:focus-within { width: 260px !important; }
-        .boc-search input { padding-left: 38px !important; height: 32px !important; font-size: 13px !important; color: #781c1c !important; font-weight: bold !important; }
-        .boc-search svg { left: 9px !important; top: 9px !important; width: 18px !important; height: 18px !important; fill: #781c1c !important; }
+        /* ẨN TOÀN BỘ THANH TÌM KIẾM MẶC ĐỊNH BỊ LỖI CỦA KHUNG PHẢ HỆ */
+        .boc-search, .boc-search input, .boc-search svg { display: none !important; }
 
         .clan-footer-credit { position: absolute; bottom: 8px; right: 15px; background: rgba(255, 253, 249, 0.9); padding: 5px 12px; border-radius: 20px; border: 1px solid #8c6d31; font-size: 11px; color: #5c4033; font-weight: bold; z-index: 999; }
         .print-qr-footer { display: none; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); text-align: center; background: #fff; padding: 10px 20px; border: 2px dashed #781c1c; border-radius: 10px; align-items: center; justify-content: center; gap: 15px; z-index: 9999; }
         .print-qr-footer img { width: 75px; height: 75px; }
 
-        .mobile-toggle-btn { display: none; }
         .boc-node text[data-field="name"] { font-weight: bold !important; fill: #ffffff !important; }
         .boc-node text[data-field="title"] { fill: #fce79d !important; opacity: 0.9; }
 
@@ -109,32 +118,21 @@
         .doi-6 rect { fill: #7e5233 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
         .doi-7 rect { fill: #2c3e50 !important; stroke: #ffffff !important; stroke-width: 1px !important; }
 
-        /* CẤU HÌNH GIAO DIỆN DI ĐỘNG (ĐÃ SỬA LỖI ẨN HOÀNH PHI) */
         @media screen and (max-width: 768px) {
             .header-clan { 
-                padding: 0 10px; 
-                height: 90px; 
-                background-color: #781c1c;
-                background-image: url('hoanhphi.png');
-                background-repeat: no-repeat;
-                background-position: center center;
-                background-size: contain;
+                padding: 0 10px; height: 90px; background-color: #781c1c;
+                background-image: url('hoanhphi.png'); background-repeat: no-repeat;
+                background-position: center center; background-size: contain;
             }
-            .header-title-left, .header-title-right { font-size: 13px; letter-spacing: 0px; display: none; }
+            .header-title-left, .header-title-right { display: none; }
             .nav-menu-bar { height: auto; flex-wrap: wrap; padding: 5px 0; }
             .nav-item { padding: 5px 10px; font-size: 11px; border: none; }
             .main-container { height: calc(100% - 165px); }
-            .sidebar-form { 
-                position: absolute; bottom: 50px; left: 0; width: 100%; height: 65%; 
-                transform: translateY(120%); border-radius: 20px 20px 0 0; 
-                border-right: none; border-top: 4px double #781c1c; transition: transform 0.3s ease;
-            }
-            .sidebar-form.open { transform: translateY(0); }
-            .mobile-toggle-btn { display: block; position: absolute; bottom: 55px; right: 15px; background: #781c1c; color: #f7d070; padding: 8px 12px; border-radius: 30px; z-index: 1000; font-weight: bold; cursor: pointer; border: 2px solid #fff1b8; font-size: 11px; }
+            .sidebar-form { width: 90%; max-height: 80vh; }
         }
 
         @media print {
-            .sidebar-form, .header-clan, .nav-menu-bar, .mobile-toggle-btn, .clan-footer-credit, .boc-search, .boc-toolbar { display: none !important; }
+            .sidebar-form, .header-clan, .nav-menu-bar, .clan-footer-credit, .tree-toolbar { display: none !important; }
             body, html, .main-container, #tree, .page-section { width: 100% !important; height: 100% !important; background: #ffffff !important; position: absolute !important; top: 0; left: 0; margin: 0; padding: 0; overflow: hidden; }
             #ph_he_section { display: flex !important; }
             .print-qr-footer { display: flex !important; }
@@ -163,6 +161,14 @@
     
     <div class="main-container">
         <div id="ph_he_section" class="page-section active">
+            
+            <div class="tree-toolbar">
+                <button class="btn-tool" onclick="moModalThemMoi()">➕ THÊM THÀNH VIÊN MỚI</button>
+                <button class="btn-tool" onclick="chart.zoom(1.2)">🔍 PHÓNG TO</button>
+                <button class="btn-tool" onclick="chart.zoom(0.8)">🔍 THU NHỎ</button>
+                <button class="btn-tool" onclick="chart.fit()">🔄 XEM TOÀN CẢNH</button>
+            </div>
+
             <div class="sidebar-form" id="sidebarForm">
                 <h2 id="formTitle">CẬP NHẬT THÀNH VIÊN</h2>
                 
@@ -191,14 +197,14 @@
                 </div>
                 
                 <button class="btn-submit" id="btnSubmitForm" onclick="luuThanhVien()">Cập Nhật Gia Phả</button>
-                <button class="btn-submit" id="btnCancelEdit" style="background:#7f8c8d; display:none; margin-top:5px;" onclick="datLaiForm()">HỦY CHẾ ĐỘ SỬA</button>
+                <button class="btn-submit" style="background:#7f8c8d; margin-top:5px;" onclick="dongModalForm()">ĐÓNG CỬA SỔ</button>
 
                 <div style="display: flex; gap: 5px; margin-top: 4px;">
                     <button class="btn-submit" style="background: #27ae60; color: white; padding: 8px; font-size:10px;" onclick="chuanBiIn('tat_ca')">🖨️ IN TẤT CẢ</button>
                     <button class="btn-submit" style="background: #b8860b; color: white; padding: 8px; font-size:10px;" onclick="chuanBiIn('chi_nam')">🖨️ CHỈ IN NAM</button>
                 </div>
             </div>
-            <div class="mobile-toggle-btn" onclick="toggleMobile()">✍️ THAY ĐỔI</div>
+
             <div id="tree"></div>
         </div>
 
@@ -253,6 +259,7 @@
     <script>
         var imgNgo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23de5d5d' stroke='%23f7d070' stroke-width='2'/%3E%3Ctext x='50' y='64' font-family='serif' font-size='50' font-weight='bold' fill='%23fce79d' text-anchor='middle'%3E吳%3C/text%3E%3C/svg%3E";
 
+        // TÍNH HỢP SẴN KHU VỰC DATABASE ĐƯỜNG TRUYỀN CỦA BẠN
         var firebaseConfig = {
             apiKey: "AIzaSyAs-V0b3v6I3xAnD3Z-n1zO87T3vHnF44",
             authDomain: "phahehongo.firebaseapp.com",
@@ -270,14 +277,13 @@
         var giaPha = [];
         var chart;
 
-        OrgChart.SearchPlaceholder = "Tìm thành viên...";
-
         chart = new OrgChart(document.getElementById("tree"), {
             template: "isla",
             mouseScrol: OrgChart.action.zoom,
             nodeBinding: { field_0: "name", field_1: "title", img_0: "img" },
             siblingSpacing: 15, 
             levelSpacing: 40,   
+            searchFields: [], // Vô hiệu hóa tính năng tìm kiếm lỗi của OrgChart
             tags: {
                 "doi-1": { node: { width: 320, height: 120 } },
                 "doi-2": { node: { width: 260, height: 95 } },
@@ -289,6 +295,7 @@
             }
         });
 
+        // SỰ KIỆN NHẤN VÀO THÀNH VIÊN ĐỂ SỬA - SẼ HIỆN POP-UP NỔI GIỮA MÀN HÌNH
         chart.on('click', function(sender, args) {
             var memberId = args.node.id;
             var memberData = giaPha.find(n => n.id === memberId);
@@ -306,26 +313,34 @@
                 capNhatGiaoDienCha(); 
                 document.getElementById("parentSelect").value = memberData.pid || "";
                 
-                document.getElementById("formTitle").innerText = "SỬA THÀNG VIÊN: " + memberData.name.toUpperCase();
+                document.getElementById("formTitle").innerText = "SỬA THÀNH VIÊN: " + memberData.name.toUpperCase();
                 document.getElementById("btnSubmitForm").innerText = "LƯU THAY ĐỔI";
-                document.getElementById("btnCancelEdit").style.display = "block";
                 
-                if (window.innerWidth <= 768) {
-                    document.getElementById("sidebarForm").classList.add("open");
-                }
+                document.getElementById("sidebarForm").classList.add("open");
             }
             return false; 
         });
 
-        function khoaTiengVietThanhTimKiem() {
-            setInterval(function() {
-                var oTimKiem = document.querySelector('.boc-search input');
-                if (oTimKiem) {
-                    if (oTimKiem.getAttribute('placeholder') !== 'Tìm thành viên...') {
-                        oTimKiem.setAttribute('placeholder', 'Tìm thành viên...');
-                    }
-                }
-            }, 200);
+        function moModalThemMoi() {
+            document.getElementById("editMemberId").value = "";
+            document.getElementById("newName").value = "";
+            document.getElementById("newTitle").value = "";
+            document.getElementById("photoBase64").value = "";
+            document.getElementById("searchParentInput").value = "";
+            document.getElementById("parentSelect").value = "";
+            document.getElementById("parentSelect").size = 1;
+            
+            var fileInput = document.querySelector('input[type="file"]');
+            if(fileInput) fileInput.value = "";
+
+            capNhatGiaoDienCha();
+            document.getElementById("formTitle").innerText = "THÊM THÀNH VIÊN MỚI";
+            document.getElementById("btnSubmitForm").innerText = "THÊM VÀO GIA PHẢ";
+            document.getElementById("sidebarForm").classList.add("open");
+        }
+
+        function dongModalForm() {
+            document.getElementById("sidebarForm").classList.remove("open");
         }
 
         function taoMaQR() {
@@ -350,7 +365,6 @@
                 giaPha = [];
             }
             capNhatGiaoDienCha();
-            khoaTiengVietThanhTimKiem();
         });
 
         dbArticles.on('value', function(snapshot) {
@@ -366,7 +380,7 @@
         function capNhatGiaoDienCha(danhSachLoc) {
             chart.load(giaPha);
             var sel = document.getElementById("parentSelect");
-            sel.innerHTML = '<option value="">-- Chọn Cha --</option>';
+            sel.innerHTML = '<option value="">-- BẮT BUỘC CHỌN CHA --</option>';
             
             var currentEditId = document.getElementById("editMemberId").value;
             var nguonDuLieu = danhSachLoc || giaPha;
@@ -409,6 +423,7 @@
             event.target.classList.add('active');
         }
 
+        // HÀM LƯU THÀNH VIÊN ĐÃ ĐƯỢC THIẾT LẬP RÀNG BUỘC CỨNG CHẶN TÁCH NHÁNH
         function luuThanhVien() {
             var id = document.getElementById("editMemberId").value;
             var name = document.getElementById("newName").value.trim();
@@ -418,6 +433,12 @@
             var img = document.getElementById("photoBase64").value;
             
             if(!name) return alert("Vui lòng nhập họ tên!");
+
+            // BẮT BUỘC PHẢI CHỌN CHA, KHÔNG CHO PHÉP ĐỂ TRỐNG (TRÁNH LỖI ĐẺ NHÁNH)
+            if (!pid && giaPha.length > 0) {
+                alert("LỖI CẤU TRÚC: Bạn chưa chọn tên Cha! Hệ thống yêu cầu bắt buộc phải tìm và chọn tên Cha từ danh sách để liên kết đúng vào nhánh dòng họ.");
+                return;
+            }
 
             var tagDoi = "doi-7";
             if(title.includes("1")) tagDoi = "doi-1";
@@ -443,8 +464,9 @@
                     tags: [tagDoi]
                 }, function(error) {
                     if(!error) {
-                        alert("Đã cập nhật thay đổi ảnh và thông tin thành công!");
-                        datLaiForm();
+                        alert("Đã cập nhật thông tin thành công!");
+                        dongModalForm();
+                        moModalThemMoi();
                     }
                 });
             } else {
@@ -461,31 +483,12 @@
                     tags: [tagDoi]
                 }, function(error) {
                     if(!error) {
-                        alert("Đã thêm thành viên mới thành công lên đám mây!");
-                        datLaiForm();
+                        alert("Đã thêm thành viên mới thành công!");
+                        dongModalForm();
+                        moModalThemMoi();
                     }
                 });
             }
-        }
-
-        function datLaiForm() {
-            document.getElementById("editMemberId").value = "";
-            document.getElementById("newName").value = "";
-            document.getElementById("newTitle").value = "";
-            document.getElementById("photoBase64").value = "";
-            document.getElementById("searchParentInput").value = "";
-            document.getElementById("parentSelect").value = "";
-            document.getElementById("parentSelect").size = 1;
-            
-            var fileInput = document.querySelector('input[type="file"]');
-            if(fileInput) fileInput.value = "";
-
-            document.getElementById("formTitle").innerText = "CẬP NHẬT THÀNH VIÊN";
-            document.getElementById("btnSubmitForm").innerText = "Cập Nhật Gia Phả";
-            document.getElementById("btnCancelEdit").style.display = "none";
-            
-            if(window.innerWidth <= 768) toggleMobile();
-            capNhatGiaoDienCha();
         }
 
         function luuBaiViet(tabId) {
@@ -506,8 +509,6 @@
                 reader.readAsDataURL(f.files[0]);
             }
         }
-
-        function toggleMobile() { document.getElementById("sidebarForm").classList.toggle("open"); }
 
         function chuanBiIn(loaiIn) {
             if (loaiIn === 'chi_nam') {
